@@ -1,0 +1,127 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_map_read_ants.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/03/24 15:03:50 by majosue           #+#    #+#             */
+/*   Updated: 2020/03/24 22:48:31 by majosue          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "lem-in.h"
+#include <stdio.h>
+
+/*
+**	Exit with error message 
+*/
+
+void	ft_exit(char *str, char *str2)
+{
+	if (str)
+	{
+		ft_putstr_fd(str, 2);
+		ft_putendl_fd(str2, 2);
+		exit(EXIT_FAILURE);
+	}
+	perror(NULL);
+	exit(EXIT_FAILURE);
+}
+
+/*
+**	Check line in map, that must be number of ants
+**	0 < int > INT_MAX
+*/
+
+int		ft_is_ant_nbr(char *line, t_list **map)
+{
+	int		error;
+	int		number;
+	char	*test_str;
+
+	number = ft_atoi(line);
+	if (number <= 0)
+		return (EXIT_FAILURE);
+	test_str = ft_itoa(number);
+	if (!test_str)
+		ft_exit(NULL, NULL);
+	if (ft_strequ(line, test_str) || ft_strequ(line + 1, test_str))
+	{
+		free(test_str);
+		error = ft_lstp2back(map, line, ft_strlen(line));
+		if (error)
+			ft_exit(NULL, NULL);
+		return (EXIT_SUCCESS);
+	}
+	free(test_str);
+	return (EXIT_FAILURE);
+}
+
+/*
+**		Check is line - command 
+**	save if command unknown,	return (0)
+**	if known command not save	return (1)
+**	if line is not a command	return (-1)
+*/
+
+int		ft_is_command(char *line, t_list **map)
+{
+	int error;
+
+	if (line[0] && line[0] == '#' && line[1] == '#' &&
+		!ft_strequ(line, "##start") && !ft_strequ(line, "##end"))
+	{
+		error = ft_lstp2back(map, line, ft_strlen(line));
+		if (error)
+			ft_exit(NULL, NULL);
+		return (0);
+	}
+	if (ft_strequ(line, "##start") || !ft_strequ(line, "##end"))
+		return (1);
+	return (-1);
+}
+
+/*
+**	Check is line - comment, save it, return 0;
+**	else return 1;
+*/
+
+int		ft_is_comment(char *line, t_list **map)
+{
+	int error;
+
+	if (line[0] && line[0] == '#' && !((line[1] == '#')))
+	{
+		error = ft_lstp2back(map, line, ft_strlen(line));
+		if (error)
+			ft_exit(NULL, NULL);
+		return (EXIT_SUCCESS);
+	}
+	return (EXIT_FAILURE);
+}
+
+int		ft_map_read_ants(char **line, t_list **map)
+{
+	int read_state;
+	int error;
+
+	error = 0;
+	while ((read_state = get_next_line(0, line)) > 0)
+	{
+		if (ft_is_comment(*line, map) == 0 ||
+			ft_is_command(*line, map) == 0)
+		{
+			free(*line);
+			continue;
+		}
+		error = (ft_is_ant_nbr(*line, map));
+		free(*line);
+		break;
+	}
+	if (read_state == -1)
+		ft_exit(NULL, NULL);
+	else if (read_state == 0 || error)
+		ft_exit("Error: no ants found", "");
+	return (0);
+}
