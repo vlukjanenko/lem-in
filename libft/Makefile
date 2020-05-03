@@ -6,12 +6,12 @@
 #    By: majosue <majosue@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/09/04 16:04:38 by majosue           #+#    #+#              #
-#    Updated: 2019/12/26 17:09:00 by majosue          ###   ########.fr        #
+#    Updated: 2020/04/29 21:02:45 by majosue          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libft.a
-HEADER = libft.h
+HEADER = libft.h get_next_line.h
 COMPILERC = gcc
 MAKERLIB = ar rc
 FLAGS = -Wall -Wextra -Werror

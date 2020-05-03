@@ -6,97 +6,151 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 18:23:10 by majosue           #+#    #+#             */
-/*   Updated: 2020/03/24 23:57:17 by majosue          ###   ########.fr       */
+/*   Updated: 2020/05/01 17:56:22 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem-in.h"
 
-int ft_array_len(char **array)
-{
-    int i;
+/*
+**	Return room name separated from room coordinates
+*/
 
-    i = 0;
-    while (array[i])
-        i++;
-    return (i);
+char	*ft_get_room_name(char *line)
+{
+	int		end;
+	char	*name;
+
+	end = ft_strlen(line) - 1;
+	while (end >= 0 && line[end] == ' ')
+		end--;
+	while ((end >= 0 && line[end] >= '0' && line[end] <= '9'))
+		end--;
+	if (line[end] == '-' || line[end] == '+')
+		end--;
+	while (end >= 0 && line[end] == ' ')
+		end--;
+	while ((end >= 0 && line[end] >= '0' && line[end] <= '9'))
+		end--;
+	if (line[end] == '-' || line[end] == '+')
+		end--;
+	if (ft_memchr(line, '-', end))
+		ft_exit("Error: ivalid symbol \"-\" in room name", "");
+	name = ft_strsub(line, 0, end);
+	if (name == NULL)
+		ft_exit(NULL, NULL);
+	return (name);
 }
 
-int ft_is_room(char *line, t_list **map)
+/*
+**	Try to save room if it is unic and don't have "-" sign
+**	in name
+*/
+
+int		ft_add_room(t_anthill *anthill, char *line, int x, int y)
 {
-    char **tmp_array;
-    
-    if (line[0] == 'L')
-        ft_exit("Error: room name begin with L", "");
-    if (!(tmp_array = ft_strsplit(line, ' ')))
-        ft_exit(NULL, NULL);
-    if (ft_array_len != 3)
-        ft_exit("Error: invalid room line", line);
-    if (ft_is_unic_room(tmp_array[0], map))
-        ft_exit("Error: room already exist - ", tmp_array[0]);
-    if (ft_str_is_int(tmp_array[1]) || ft_str_is_int(tmp_array[2]))    
-        ft_exit("Error: wrong room coordinates in line ", line);
-    if (ft_is_unic_cord(tmp_array[1], tmp_array[2], map))
-        ft_exit("Error: there is another room whit same cor", tmp_array[0]);
-        // далее добавляем комнату
-    free(tmp_array);
-    
+	t_room room;
+
+	room.x = x;
+	room.y = y;
+	room.visited = -1;
+	room.connected_rooms = NULL;
+	room.name = ft_get_room_name(line);
+	if (ft_get_room_adress(room.name, anthill))
+		ft_exit("Error: Duble room name", room.name);
+	if (ft_lstp2back(&anthill->rooms, &room, sizeof(room)))
+		ft_exit(NULL, NULL);
+	if (ft_lstp2back(&anthill->map, line, ft_strlen(line) + 1))
+		ft_exit(NULL, NULL);
+	return (EXIT_SUCCESS);
 }
 
-int ft_is_unic_command(char *line, t_list **map)
+/*
+**	Check line for posible canidate (3 word, last 2 - integer)
+**	Try to save room;
+*/
+
+int		ft_is_room(char *line, t_anthill *anthill)
 {
-    t_list *head;
-    int error;
-    
-    while (head)
-    {
-        if (ft_strequ(line, (char *)((*map)->content)))
-            ft_exit("Error: detected second ", line);
-            head = head->next;
-    }
-    if (ft_lstp2back(map, line, ft_strlen(line)))
-        ft_exit(NULL, NULL);
-    if ((error = get_next_line(0, line)) < 0) //???
-        ft_exit(NULL, NULL);
-    else if (error == 0);
-        ft_exit("Error: unexpected end of map", "");
-    if (ft_is_room(line, map))
-        ft_exit("Error: Expected room instead: ", line);
-    free(line);
-    return (0);
+	char	**tmp_array;
+	int		len;
+	int		x;
+	int		y;
+
+	if (!(tmp_array = ft_strsplit(line, ' ')))
+		ft_exit(NULL, NULL);
+	if ((line[0] == 'L') || (len = ft_array_len(tmp_array)) < 3 ||\
+	(ft_str_is_int(tmp_array[len - 2], &x) ||\
+	ft_str_is_int(tmp_array[len - 1], &y)))
+	{
+		ft_clean_array(&tmp_array);
+		return (EXIT_FAILURE);
+	}
+	ft_add_room(anthill, line, x, y);
+	ft_clean_array(&tmp_array);
+	return (EXIT_SUCCESS);
 }
 
-int ft_is_link(char *line, t_list **map)
+/*
+**	Try read and save start or end room
+*/
+
+int		ft_get_start_end(char *line, t_anthill *anthill)
 {
-    (void)line;
-    (void)map;
-    return (0);
+	if (ft_strequ(line, "##start"))
+	{
+		if (anthill->start_room)
+			ft_exit("Error: second start room detected", "");
+		if (get_next_line(0, &line) <= 0)
+			ft_exit(NULL, NULL);
+		if (ft_is_room(line, anthill))
+			ft_exit("Error: expected room instead:", line);
+		anthill->start_room = ft_get_room_name(line);
+	}
+	else
+	{
+		if (anthill->end_room)
+			ft_exit("Error: second end room detected", "");
+		if (get_next_line(0, &line) <= 0)
+			ft_exit(NULL, NULL);
+		if (ft_is_room(line, anthill))
+			ft_exit("Error: expected room instead:", line);
+		anthill->end_room = ft_get_room_name(line);
+	}
+	free(line);
+	return (EXIT_SUCCESS);
 }
 
-int ft_map_read_rooms(char **line, t_list **map)
-{
-    int read_state;
-    int error;
+/*
+**	Read comments, commands, rooms until meet unknown line
+**	This line will be cheked first in ft_map_read_links
+*/
 
-    error = 0;
-    while ((read_state = get_next_line(0, line)) > 0)
-    {
-        if (ft_is_comment(*line, map) == 0 ||
-            ft_is_command(*line, map) == 0 ||
-            (ft_is_command(*line, map) == 1 && 
-            ft_is_unic_command(line, map) == 0) ||\
-            ft_is_room(line, map))
-        {
-            free(*line);
-            continue;
-        }
-        error = (ft_is_link(*line, map));
-        free(*line);
-        break;
-    }
-    if (read_state == -1)
-        ft_exit(NULL);
-    else if (read_state == 0 || error)
-        ft_exit("Error: invalid line in map");
-    return (0);
+int		ft_map_read_rooms(char **line, t_anthill *anthill)
+{
+	int read_state;
+	int error;
+
+	while ((read_state = get_next_line(0, line)) > 0)
+	{
+		if (ft_is_comment(*line, &anthill->map) == 0 ||
+			(error = ft_is_command(*line, &anthill->map)) == 0 ||
+			(error == 1 &&
+			ft_get_start_end(*line, anthill) == 0) ||
+			ft_is_room(*line, anthill) == 0)
+		{
+			free(*line);
+			continue;
+		}
+		break ;
+	}
+	if (read_state == -1)
+		ft_exit(NULL, NULL);
+	if (anthill->rooms == NULL)
+		ft_exit("Error: No rooms found", "");
+	if (anthill->start_room == NULL)
+		ft_exit("Error: No start room found", "");
+	if (anthill->end_room == NULL)
+		ft_exit("Error: No end room found", "");
+	return (EXIT_SUCCESS);
 }
