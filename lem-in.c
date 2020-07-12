@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/20 12:33:02 by majosue           #+#    #+#             */
-/*   Updated: 2020/05/03 18:51:16 by majosue          ###   ########.fr       */
+/*   Updated: 2020/07/12 16:37:20 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,6 @@ int	main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 	ft_map_read(&anthill);
-	ft_find_path(&anthill);	
+	//ft_find_path(&anthill);	
+	ft_karp(&anthill);
 }

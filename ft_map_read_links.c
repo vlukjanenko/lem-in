@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/29 09:05:08 by majosue           #+#    #+#             */
-/*   Updated: 2020/05/01 06:44:01 by majosue          ###   ########.fr       */
+/*   Updated: 2020/07/12 17:05:16 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int ft_is_link(char *line, t_anthill *anthill)
 	char **room_names;
     t_list *room = NULL;
     t_list *connected_room = NULL;
+	t_link edge;
 
     if ((room_names = ft_strsplit(line, '-')) == NULL)
         ft_exit(NULL, NULL);
@@ -34,9 +35,13 @@ int ft_is_link(char *line, t_anthill *anthill)
    // printf("%s - %s\n", ((t_room*)(room->content))->name, ((t_room*)(connected_room->content))->name);
 	if (ft_lstp2back(&anthill->map, line, ft_strlen(line) + 1))//тупо для карты чтоб вывести
 		ft_exit(NULL, NULL);
-    if (ft_lstp2back(&((t_room*)room->content)->connected_rooms, &connected_room, sizeof(connected_room)))
+	edge.room = connected_room;
+	edge.flow = 0;
+	edge.disable = 0;
+    if (ft_lstp2back(&((t_room*)room->content)->connected_rooms, &edge, sizeof(edge)))
 		ft_exit(NULL, NULL);
-    if (ft_lstp2back(&((t_room*)connected_room->content)->connected_rooms, &room, sizeof(room))) 
+	edge.room = room;
+    if (ft_lstp2back(&((t_room*)connected_room->content)->connected_rooms, &edge, sizeof(edge))) 
 		ft_exit(NULL, NULL);
 	
     return (EXIT_SUCCESS);
@@ -57,7 +62,6 @@ int ft_map_read_links(char **line,  t_anthill *anthill) // сюда приход
 			free(*line);
 			continue;
 		}
-		free(*line);
 		break ;
 	}
 	if (read_state == -1)

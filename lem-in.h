@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/20 12:35:07 by majosue           #+#    #+#             */
-/*   Updated: 2020/05/03 18:35:08 by majosue          ###   ########.fr       */
+/*   Updated: 2020/07/12 16:32:44 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@
 typedef struct  s_anthill
 {
 	int		ants;
-	char	*start_room;
-	char	*end_room;
+	t_list	*start_room;
+	t_list	*end_room;
 	t_list	*map;
 	t_list	*rooms;
 }               t_anthill;
@@ -50,6 +50,18 @@ typedef struct  s_room
 	t_list *connected_rooms;
 }               t_room;
 
+/*
+**	Structure for links
+**	store (t_list*)room from anthill
+*/
+
+typedef struct	s_link
+{
+	t_list	*room; 
+	int		flow;
+	int		disable;
+}				t_link;
+
 
 int     ft_lstp2back(t_list **begin_list, void const *content, size_t content_size);
 int     ft_map_read_ants(char **line, t_anthill *anthill);
@@ -66,5 +78,11 @@ int		ft_map_read_links(char **line,  t_anthill *anthill);
 void	del(void *content, size_t size);
 t_list	*ft_dequeue(t_list **queue);
 int		ft_find_path(t_anthill *anthill);
+int 	ft_get_flow_from_connected(t_list *connected_rooms);
+t_room	*ft_get_room_from_connected(t_list *connected_rooms);
+int ft_karp(t_anthill *anthill);
+t_list *ft_get_room_adress_from_connected(t_list *connected_rooms);
+
+
 
 #endif

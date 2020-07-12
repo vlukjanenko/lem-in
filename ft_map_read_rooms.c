@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 18:23:10 by majosue           #+#    #+#             */
-/*   Updated: 2020/05/01 17:56:22 by majosue          ###   ########.fr       */
+/*   Updated: 2020/07/12 13:05:25 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ int		ft_get_start_end(char *line, t_anthill *anthill)
 			ft_exit(NULL, NULL);
 		if (ft_is_room(line, anthill))
 			ft_exit("Error: expected room instead:", line);
-		anthill->start_room = ft_get_room_name(line);
+		anthill->start_room = ft_get_room_adress(ft_get_room_name(line), anthill);
 	}
 	else
 	{
@@ -115,7 +115,7 @@ int		ft_get_start_end(char *line, t_anthill *anthill)
 			ft_exit(NULL, NULL);
 		if (ft_is_room(line, anthill))
 			ft_exit("Error: expected room instead:", line);
-		anthill->end_room = ft_get_room_name(line);
+		anthill->end_room = ft_get_room_adress(ft_get_room_name(line), anthill);
 	}
 	free(line);
 	return (EXIT_SUCCESS);
