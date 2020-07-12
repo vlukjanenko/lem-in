@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/12 18:43:15 by majosue           #+#    #+#             */
-/*   Updated: 2020/05/01 05:38:12 by majosue          ###   ########.fr       */
+/*   Updated: 2020/05/03 17:59:34 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,17 @@ int		ft_array_len(char **array)
 	while (array[i])
 		i++;
 	return (i);
+}
+
+/*
+**	Clean up memory at content
+*/
+
+void	del(void *content, size_t size)
+{
+	if (content)
+	{
+		ft_bzero(content, size);
+		ft_memdel(&content);
+	}
 }

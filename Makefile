@@ -6,7 +6,7 @@
 #    By: majosue <majosue@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/13 10:14:46 by majosue           #+#    #+#              #
-#    Updated: 2020/04/29 19:31:46 by majosue          ###   ########.fr        #
+#    Updated: 2020/05/03 18:51:42 by majosue          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ LIBFT = libft/libft.a
 COMPILERC = gcc
 FLAGS = -Wall -Wextra -Werror -g
 SOURCES  =  lem-in.c ft_lstp2back.c ft_map_read_ants.c ft_map_read_rooms.c \
-ft_atoi_base.c ft_str_is_int.c ft_map_read_links.c
+ft_atoi_base.c ft_str_is_int.c ft_map_read_links.c ft_find_path.c
 
 OBJECTS = $(SOURCES:.c=.o)
 .PHONY: clean fclean re
