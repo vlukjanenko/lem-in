@@ -1,3 +1,4 @@
+
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -6,7 +7,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/20 12:35:07 by majosue           #+#    #+#             */
-/*   Updated: 2020/05/01 05:37:15 by majosue          ###   ########.fr       */
+/*   Updated: 2020/07/09 06:03:48 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +37,13 @@ typedef struct  s_room
 	int		visited;
 	t_list *connected_rooms; //тут просто список комнат нужен
 }               t_room;
+
+typedef struct s_link
+{
+	t_list *room; 
+	int	flow;
+	int del;
+}	t_link;
 
 
 int     ft_lstp2back(t_list **begin_list, void const *content, size_t content_size);
