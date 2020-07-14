@@ -22,7 +22,7 @@ void ft_print_graf(t_anthill *anthill)
 		head2 = ((t_room *)(head->content))->connected_rooms;
 		while (head2)
 		{
-			printf("%s - %s flow [%d], %p, %p\n", ((t_room *)(head->content))->name, ft_get_room_from_connected(head2)->name, ft_get_flow_from_connected(head2), ft_get_room_adress_from_connected(head2), anthill->end_room);
+			printf("%s - %s flow [%d][%d]\n", ((t_room *)(head->content))->name, ft_get_room_from_connected(head2)->name, ft_get_flow_from_connected(head2), ft_get_link_from_connected(head2)->disable);
 			head2 = head2->next;
 		}
 		printf("\n");
@@ -143,6 +143,8 @@ int ft_mark_path(t_anthill *anthill)
 				if (ft_get_link_from_connected(rooms)->flow == 1)
 				{
 					printf("find block\n");
+					ft_find_link(ft_get_room_adress_from_connected(rooms), room)->disable = 1;
+					ft_get_link_from_connected(rooms)->disable = 1;
 					return (-1);
 				}
 				printf("%s -> ", ft_get_room_from_anthill(room)->name);
@@ -181,7 +183,7 @@ int ft_find_path(t_anthill *anthill)
 			rooms = rooms->next;
 		}
 	}
-	ft_print_graf(anthill);
+	//ft_print_graf(anthill);
 	ft_run_ant(anthill);
 	return (EXIT_SUCCESS);
 }
@@ -214,6 +216,7 @@ int ft_find_augmenting_path(t_anthill *anthill)
 				{
 					//printf("come to mark");
 					ft_lstdel(&queue, del);
+					//ft_mark_path(anthill);
 					return (ft_mark_path(anthill));
 					//ft_print_graf(anthill);
 					//printf("------------------------------------------\n");
@@ -259,30 +262,56 @@ void ft_reset_visited(t_anthill *anthill)
 	}
 }
 
+int ft_get_number_links(t_list *lst)
+{
+	int number;
+
+	number = 0;
+	while (lst)
+	{
+		number++;
+		lst = lst->next;
+	}
+	return (number);
+}
+
 int ft_karp(t_anthill *anthill)
 {
 	int max_flow;
+	int links_start;
+	int links_end;
+	int max;
 
+	links_start = ft_get_number_links(anthill->start_room);
+	links_end = ft_get_number_links(anthill->end_room);
+	max = links_start < links_end ? links_start : links_end;
 	ft_reset_visited(anthill);
 	max_flow = 0;
+
+	int result;
+	//ft_print_graf(anthill);
 	//ft_find_augmenting_path(anthill);
 	while (1)
 	{
-
-		if (ft_find_augmenting_path(anthill) == -1)
+		result = ft_find_augmenting_path(anthill);
+		if (result == -1)
 		{
 			ft_reset_flows(anthill);
 			ft_reset_visited(anthill);
 			max_flow = 0;
 		} 
-		else if (ft_find_augmenting_path(anthill) == 1)
+		else if (result == 1)
 		{
 			max_flow++;
+			if (max_flow == max)
+				break;
 			ft_reset_visited(anthill);
 		}
-		else if (ft_find_augmenting_path(anthill) == 0)
+		else if (result == 0)
 			break;
 	}
-printf("Maxflow = %d", max_flow);
+printf("Maxflow = %d\n", max_flow);
+//ft_reset_flows(anthill);
+//ft_print_graf(anthill);
 return (1);
 }
