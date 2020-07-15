@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 18:23:10 by majosue           #+#    #+#             */
-/*   Updated: 2020/07/12 13:05:25 by majosue          ###   ########.fr       */
+/*   Updated: 2020/07/14 21:19:54 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ int		ft_add_room(t_anthill *anthill, char *line, int x, int y)
 	room.x = x;
 	room.y = y;
 	room.visited = -1;
+	room.room_flow = 0;
 	room.connected_rooms = NULL;
 	room.name = ft_get_room_name(line);
 	if (ft_get_room_adress(room.name, anthill))

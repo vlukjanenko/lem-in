@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/20 12:35:07 by majosue           #+#    #+#             */
-/*   Updated: 2020/07/12 16:32:44 by majosue          ###   ########.fr       */
+/*   Updated: 2020/07/14 21:18:26 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct  s_room
 	int     x;
 	int     y;
 	int		visited;
+	int		room_flow;
 	t_list *connected_rooms;
 }               t_room;
 
