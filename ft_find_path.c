@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/03 18:18:06 by majosue           #+#    #+#             */
-/*   Updated: 2020/07/12 18:01:48 by majosue          ###   ########.fr       */
+/*   Updated: 2020/07/14 22:07:29 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,7 @@ int ft_mark_path(t_anthill *anthill)
 				}
 				printf("%s -> ", ft_get_room_from_anthill(room)->name);
 				/* room = *(t_list**)(rooms->content); */
+				ft_get_room_from_connected(rooms)->room_flow = 1;
 				room = ft_get_room_adress_from_connected(rooms);
 				break;
 			}
@@ -208,7 +209,7 @@ int ft_find_augmenting_path(t_anthill *anthill)
 			current_room = ft_get_room_adress_from_connected(rooms);
 			//printf("Curroom %p\nEndroom %p\n", current_room, anthill->end_room);
 
-			if (ft_get_room_from_connected(rooms)->visited == -1 && ft_get_link_from_connected(rooms)->flow == 0 && ft_get_link_from_connected(rooms)->disable == 0)
+			if (ft_get_room_from_connected(rooms)->visited == -1 && ft_get_link_from_connected(rooms)->flow == 0 && ft_get_link_from_connected(rooms)->disable == 0 && ft_get_room_from_connected(rooms)->room_flow == 0)
 			{
 				ft_get_room_from_connected(rooms)->visited = ft_get_room_from_anthill(room)->visited + 1;
 				ft_lstp2back(&queue, &current_room, sizeof(current_room));
@@ -241,6 +242,7 @@ void ft_reset_flows(t_anthill *anthill)
 	head = anthill->rooms;
 	while (head)
 	{
+		ft_get_room_from_anthill(head)->room_flow = 0;
 		head2 = ft_get_room_from_anthill(head)->connected_rooms;
 		while (head2)
 		{
@@ -282,9 +284,10 @@ int ft_karp(t_anthill *anthill)
 	int links_end;
 	int max;
 
-	links_start = ft_get_number_links(anthill->start_room);
-	links_end = ft_get_number_links(anthill->end_room);
+	links_start = ft_get_number_links(ft_get_room_from_anthill(anthill->start_room)->connected_rooms);
+	links_end = ft_get_number_links(ft_get_room_from_anthill(anthill->end_room)->connected_rooms);
 	max = links_start < links_end ? links_start : links_end;
+	printf("MAX %d\n", max);
 	ft_reset_visited(anthill);
 	max_flow = 0;
 
