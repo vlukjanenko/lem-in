@@ -137,7 +137,7 @@ int ft_mark_path(t_anthill *anthill)
 		rooms = ft_get_room_from_anthill(room)->connected_rooms; // получаем список соседних комнат (список адресов)
 		while (rooms)
 		{
-			if (ft_get_room_from_anthill(room)->visited - ft_get_room_from_connected(rooms)->visited == 1)
+			if (ft_get_room_from_anthill(room)->visited - ft_get_room_from_connected(rooms)->visited == 1 && ft_find_link(ft_get_room_adress_from_connected(rooms), room)->flow == 0)
 			{
 				ft_find_link(ft_get_room_adress_from_connected(rooms), room)->flow = 1;
 				if (ft_get_link_from_connected(rooms)->flow == 1)
@@ -147,8 +147,7 @@ int ft_mark_path(t_anthill *anthill)
 					ft_get_link_from_connected(rooms)->disable = 1;
 					return (-1);
 				}
-				printf("%s -> ", ft_get_room_from_anthill(room)->name);
-				/* room = *(t_list**)(rooms->content); */
+				printf("%s <- ", ft_get_room_from_anthill(room)->name);
 				ft_get_room_from_connected(rooms)->room_flow = 1;
 				room = ft_get_room_adress_from_connected(rooms);
 				break;
@@ -207,9 +206,9 @@ int ft_find_augmenting_path(t_anthill *anthill)
 		while (rooms)
 		{
 			current_room = ft_get_room_adress_from_connected(rooms);
-			//printf("Curroom %p\nEndroom %p\n", current_room, anthill->end_room);
+			//printf("%s - %s [%d]\n",ft_get_room_from_anthill(room)->name, ft_get_room_from_connected(rooms)->name, ft_get_link_from_connected(rooms)->flow);
 
-			if (ft_get_room_from_connected(rooms)->visited == -1 && ft_get_link_from_connected(rooms)->flow == 0 && ft_get_link_from_connected(rooms)->disable == 0 && ft_get_room_from_connected(rooms)->room_flow == 0)
+			if (ft_get_room_from_connected(rooms)->visited == -1 && ft_get_link_from_connected(rooms)->flow == 0 && ft_get_link_from_connected(rooms)->disable == 0 /* && ft_get_room_from_connected(rooms)->room_flow == 0 */)
 			{
 				ft_get_room_from_connected(rooms)->visited = ft_get_room_from_anthill(room)->visited + 1;
 				ft_lstp2back(&queue, &current_room, sizeof(current_room));
@@ -224,6 +223,7 @@ int ft_find_augmenting_path(t_anthill *anthill)
 					//return (1);
 				}
 			}
+			
 			rooms = rooms->next;
 		}
 	}
@@ -253,15 +253,15 @@ void ft_reset_flows(t_anthill *anthill)
 	}
 }
 
-void ft_reset_visited(t_anthill *anthill)
+void ft_reset_visited(t_list *lst)
 {
-	t_list *head;
+	/* t_list *head;
 	head = anthill->rooms;
 	while (head)
-	{
-		ft_get_room_from_anthill(head)->visited = -1;
-		head = head->next;
-	}
+	{ */
+		ft_get_room_from_anthill(lst)->visited = -1;
+	/* 	head = head->next;
+	} */
 }
 
 int ft_get_number_links(t_list *lst)
@@ -288,7 +288,7 @@ int ft_karp(t_anthill *anthill)
 	links_end = ft_get_number_links(ft_get_room_from_anthill(anthill->end_room)->connected_rooms);
 	max = links_start < links_end ? links_start : links_end;
 	printf("MAX %d\n", max);
-	ft_reset_visited(anthill);
+	ft_lstiter(anthill->rooms, ft_reset_visited);
 	max_flow = 0;
 
 	int result;
@@ -296,11 +296,12 @@ int ft_karp(t_anthill *anthill)
 	//ft_find_augmenting_path(anthill);
 	while (1)
 	{
+		//ft_print_graf(anthill);
 		result = ft_find_augmenting_path(anthill);
 		if (result == -1)
 		{
 			ft_reset_flows(anthill);
-			ft_reset_visited(anthill);
+			ft_lstiter(anthill->rooms, ft_reset_visited);
 			max_flow = 0;
 		} 
 		else if (result == 1)
@@ -308,13 +309,13 @@ int ft_karp(t_anthill *anthill)
 			max_flow++;
 			if (max_flow == max)
 				break;
-			ft_reset_visited(anthill);
+			ft_lstiter(anthill->rooms, ft_reset_visited);
 		}
 		else if (result == 0)
 			break;
 	}
 printf("Maxflow = %d\n", max_flow);
 //ft_reset_flows(anthill);
-//ft_print_graf(anthill);
+
 return (1);
 }
