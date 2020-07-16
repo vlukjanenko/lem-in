@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/03 18:18:06 by majosue           #+#    #+#             */
-/*   Updated: 2020/07/14 22:07:29 by majosue          ###   ########.fr       */
+/*   Updated: 2020/07/16 06:50:04 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,6 @@ int ft_find_path(t_anthill *anthill)
 			rooms = rooms->next;
 		}
 	}
-	//ft_print_graf(anthill);
 	ft_run_ant(anthill);
 	return (EXIT_SUCCESS);
 }
@@ -193,44 +192,29 @@ int ft_find_augmenting_path(t_anthill *anthill)
 	t_list *queue;
 	t_list *room;
 	t_list *rooms;
-	t_list *current_room;
-
+		
 	queue = NULL;
-	room = anthill->start_room; // берём адресок из t_list rooms
-	ft_get_room_from_anthill(room)->visited = 0;
-	ft_lstp2back(&queue, &room, sizeof(room)); // кладём адресок в очередь
+	ft_get_room_from_anthill(anthill->start_room)->visited = 0;
+	ft_lstp2back(&queue, &anthill->start_room, sizeof(room)); // кладём адресок в очередь
 	while (queue)							   // пока очередь не пуста
 	{
 		room = ft_dequeue(&queue);								 // берем адрес комнаты из очереди
 		rooms = ft_get_room_from_anthill(room)->connected_rooms; // получаем список адресов соседних комнат
 		while (rooms)
 		{
-			current_room = ft_get_room_adress_from_connected(rooms);
-			//printf("%s - %s [%d]\n",ft_get_room_from_anthill(room)->name, ft_get_room_from_connected(rooms)->name, ft_get_link_from_connected(rooms)->flow);
-
 			if (ft_get_room_from_connected(rooms)->visited == -1 && ft_get_link_from_connected(rooms)->flow == 0 && ft_get_link_from_connected(rooms)->disable == 0 /* && ft_get_room_from_connected(rooms)->room_flow == 0 */)
 			{
 				ft_get_room_from_connected(rooms)->visited = ft_get_room_from_anthill(room)->visited + 1;
-				ft_lstp2back(&queue, &current_room, sizeof(current_room));
-				if (current_room == anthill->end_room)
+				ft_lstp2back(&queue, &ft_get_link_from_connected(rooms)->room, sizeof(room));
+				if (ft_get_link_from_connected(rooms)->room == anthill->end_room)
 				{
-					//printf("come to mark");
 					ft_lstdel(&queue, del);
-					//ft_mark_path(anthill);
 					return (ft_mark_path(anthill));
-					//ft_print_graf(anthill);
-					//printf("------------------------------------------\n");
-					//return (1);
 				}
-			}
-			
+			}		
 			rooms = rooms->next;
 		}
 	}
-	//ft_mark_path(anthill);
-	//ft_print_graf(anthill);
-	//printf("------------------------------------------\n");
-	//ft_run_ant(anthill);
 	return (0);
 }
 
