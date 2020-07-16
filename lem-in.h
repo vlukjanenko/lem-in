@@ -48,6 +48,7 @@ typedef struct  s_room
 	int     y;
 	int		visited;
 	int		room_flow;
+	t_list *from_room;
 	t_list *connected_rooms;
 }               t_room;
 
@@ -84,6 +85,8 @@ t_room	*ft_get_room_from_connected(t_list *connected_rooms);
 int ft_karp(t_anthill *anthill);
 t_list *ft_get_room_adress_from_connected(t_list *connected_rooms);
 t_link *ft_get_link_from_connected(t_list *connected_rooms);
+t_room *ft_get_room_from_anthill(t_list *rooms);
+
 
 
 

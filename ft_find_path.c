@@ -18,24 +18,16 @@ void ft_print_graf(t_anthill *anthill)
 	head = anthill->rooms;
 	while (head)
 	{
-		//printf("Room - %s , level - %d, conected rooms - [", ((t_room*)(head->content))->name, ((t_room*)(head->content))->visited);
-		head2 = ((t_room *)(head->content))->connected_rooms;
+		head2 = ft_get_room_from_anthill(head)->connected_rooms;
 		while (head2)
 		{
-			printf("%s - %s flow [%d][%d]\n", ((t_room *)(head->content))->name, ft_get_room_from_connected(head2)->name, ft_get_flow_from_connected(head2), ft_get_link_from_connected(head2)->disable);
+			printf("%s - %s flow [%d][%d]\n", ((t_room *)(head->content))->name, ft_get_room_from_connected(head2)->name, ft_get_link_from_connected(head2)->flow, ft_get_link_from_connected(head2)->disable);
 			head2 = head2->next;
 		}
 		printf("\n");
 		head = head->next;
 	}
 }
-
-/* t_list *room_adress(t_list *list)
-{
-	if (list == NULL)
-		return NULL;
-	return (*(t_list**)(list->content));
-} */
 
 t_room *ft_get_room_from_anthill(t_list *rooms)
 {
@@ -77,7 +69,7 @@ t_room *ft_get_room_from_connected(t_list *connected_rooms)
 	return (room);
 }
 
-int ft_get_flow_from_connected(t_list *connected_rooms)
+/* int ft_get_flow_from_connected(t_list *connected_rooms)
 {
 	t_link link;
 	int flow;
@@ -86,7 +78,7 @@ int ft_get_flow_from_connected(t_list *connected_rooms)
 	link = *(t_link *)connected_rooms->content;
 	flow = link.flow;
 	return (flow);
-}
+} */
 
 int ft_run_ant(t_anthill *anthill)
 {
@@ -130,23 +122,36 @@ int ft_mark_path(t_anthill *anthill)
 {
 	t_list *room;
 	t_list *rooms;
+	t_list *tmp;
+	//int count_sutable;
 
 	room = anthill->end_room;							// берём адресок конца из t_list rooms
-	while (ft_get_room_from_anthill(room)->visited > 0) // пока не добрались до старта
+	while (room != anthill->start_room) // пока не добрались до старта
 	{
 		rooms = ft_get_room_from_anthill(room)->connected_rooms; // получаем список соседних комнат (список адресов)
+		tmp = rooms;
+		/* count_sutable = 0;
+		while (tmp) 
+		{
+			if (ft_get_room_adress_from_connected(tmp) == ft_get_room_from_anthill(room)->from_room)
+				count_sutable++;			
+			tmp = tmp->next;
+		}
+		printf("[Sutable path to move - %d]", count_sutable); */
 		while (rooms)
 		{
-			if (ft_get_room_from_anthill(room)->visited - ft_get_room_from_connected(rooms)->visited == 1 && ft_find_link(ft_get_room_adress_from_connected(rooms), room)->flow == 0)
+/* 			if (ft_get_room_from_anthill(room)->visited - ft_get_room_from_connected(rooms)->visited == 1 && ft_find_link(ft_get_room_adress_from_connected(rooms), room)->flow == 0)
+ */			
+			if (ft_get_room_adress_from_connected(rooms) == ft_get_room_from_anthill(room)->from_room)
 			{
 				ft_find_link(ft_get_room_adress_from_connected(rooms), room)->flow = 1;
-				if (ft_get_link_from_connected(rooms)->flow == 1)
+				/* if (ft_get_link_from_connected(rooms)->flow == 1)
 				{
 					printf("find block\n");
 					ft_find_link(ft_get_room_adress_from_connected(rooms), room)->disable = 1;
 					ft_get_link_from_connected(rooms)->disable = 1;
 					return (-1);
-				}
+				} */
 				printf("%s <- ", ft_get_room_from_anthill(room)->name);
 				ft_get_room_from_connected(rooms)->room_flow = 1;
 				room = ft_get_room_adress_from_connected(rooms);
@@ -211,6 +216,7 @@ int ft_find_augmenting_path(t_anthill *anthill)
 			if (ft_get_room_from_connected(rooms)->visited == -1 && ft_get_link_from_connected(rooms)->flow == 0 && ft_get_link_from_connected(rooms)->disable == 0 /* && ft_get_room_from_connected(rooms)->room_flow == 0 */)
 			{
 				ft_get_room_from_connected(rooms)->visited = ft_get_room_from_anthill(room)->visited + 1;
+				ft_get_room_from_connected(rooms)->from_room = room;
 				ft_lstp2back(&queue, &current_room, sizeof(current_room));
 				if (current_room == anthill->end_room)
 				{
@@ -260,6 +266,7 @@ void ft_reset_visited(t_list *lst)
 	while (head)
 	{ */
 		ft_get_room_from_anthill(lst)->visited = -1;
+		ft_get_room_from_anthill(lst)->from_room = NULL;
 	/* 	head = head->next;
 	} */
 }
