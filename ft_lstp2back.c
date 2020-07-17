@@ -12,43 +12,34 @@
 
 #include "lem-in.h"
 
-int	ft_lstp2back(t_list **begin_list, void const *content, size_t content_size)
+t_list *ft_lstp2back(t_list **begin_list, void const *content, size_t content_size)
 {
 	t_list *var1;
 
 	var1 = *begin_list;
 	if (var1 == 0)
 	{
-		*begin_list = ft_lstnew(content, content_size);
-		if (!*begin_list)
-			return (1);
+		return (*begin_list = ft_lstnew(content, content_size));
 	}
-	else
+	while (var1->next != 0)
 	{
-		while (var1->next != 0)
-		{
-			var1 = var1->next;
-		}
-		var1->next = ft_lstnew(content, content_size);
-		if (!var1->next)
-
-
-			return (1);
+		var1 = var1->next;
 	}
-	return (0);
+	var1->next = ft_lstnew(content, content_size);
+	return (var1->next);
 }
 
-t_list *ft_dequeue(t_list **queue) 
+t_list *ft_dequeue(t_list **queue)
 {
 	t_list *head;
 	void *content;
-	
+
 	if (*queue == NULL)
 		return (NULL);
 	head = *queue;
 	*queue = (*queue)->next;
 	head->next = NULL;
-	content = *(t_list**)(head->content);
+	content = *(t_list **)(head->content);
 	ft_lstdelone(&head, del);
 	return (content);
 }

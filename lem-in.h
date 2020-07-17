@@ -47,7 +47,7 @@ typedef struct  s_room
 	int     x;
 	int     y;
 	int		visited;
-	int		room_flow;
+	int		out;
 	t_list *from_room;
 	t_list *connected_rooms;
 }               t_room;
@@ -65,7 +65,7 @@ typedef struct	s_link
 }				t_link;
 
 
-int     ft_lstp2back(t_list **begin_list, void const *content, size_t content_size);
+t_list	*ft_lstp2back(t_list **begin_list, void const *content, size_t content_size);
 int     ft_map_read_ants(char **line, t_anthill *anthill);
 void	ft_exit(char *str, char *str2);
 int		ft_is_command(char *line, t_list **map);
@@ -86,9 +86,7 @@ int ft_karp(t_anthill *anthill);
 t_list *ft_get_room_adress_from_connected(t_list *connected_rooms);
 t_link *ft_get_link_from_connected(t_list *connected_rooms);
 t_room *ft_get_room_from_anthill(t_list *rooms);
-
-
-
-
+void ft_set_edge(t_list *in_room, t_list *out_room);
+void ft_print_graf(t_anthill *anthill);
 
 #endif

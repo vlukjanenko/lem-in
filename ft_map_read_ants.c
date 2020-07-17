@@ -38,13 +38,13 @@ void	ft_exit(char *str, char *str2)
 int		ft_is_ant_nbr(char *line, t_anthill *anthill)
 {
 	int number;
-	int error;
+	void *error;
 
 	if (!ft_str_is_int(line, &number) && number > 0)
 	{
 		anthill->ants = number;
 		error = ft_lstp2back(&anthill->map, line, ft_strlen(line));
-		if (error)
+		if (!error)
 			ft_exit(NULL, NULL);
 		return (EXIT_SUCCESS);
 	}
@@ -60,12 +60,12 @@ int		ft_is_ant_nbr(char *line, t_anthill *anthill)
 
 int		ft_is_command(char *line, t_list **map)
 {
-	int error;
+	void *error;
 
 	if (line[0] && line[0] == '#' && line[1] == '#')
 	{
 		error = ft_lstp2back(map, line, ft_strlen(line) + 1);
-		if (error)
+		if (!error)
 			ft_exit(NULL, NULL);
 	}
 	else
@@ -82,12 +82,12 @@ int		ft_is_command(char *line, t_list **map)
 
 int		ft_is_comment(char *line, t_list **map)
 {
-	int error;
+	void *error;
 
 	if (line[0] && line[0] == '#' && !((line[1] == '#')))
 	{
 		error = ft_lstp2back(map, line, ft_strlen(line));
-		if (error)
+		if (!error)
 			ft_exit(NULL, NULL);
 		return (EXIT_SUCCESS);
 	}

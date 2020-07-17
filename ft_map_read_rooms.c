@@ -50,18 +50,24 @@ char	*ft_get_room_name(char *line)
 int		ft_add_room(t_anthill *anthill, char *line, int x, int y)
 {
 	t_room room;
+	t_list *in_room;
+	t_list *out_room;
 
 	room.x = x;
 	room.y = y;
 	room.visited = -1;
-	room.room_flow = 0;
+	room.out = 0;
 	room.connected_rooms = NULL;
 	room.name = ft_get_room_name(line);
 	if (ft_get_room_adress(room.name, anthill))
-		ft_exit("Error: Duble room name", room.name);
-	if (ft_lstp2back(&anthill->rooms, &room, sizeof(room)))
+		ft_exit("Error: room already exist", room.name);
+	if (!(in_room = ft_lstp2back(&anthill->rooms, &room, sizeof(room))))
 		ft_exit(NULL, NULL);
-	if (ft_lstp2back(&anthill->map, line, ft_strlen(line) + 1))
+	room.out = 1;
+	if (!(out_room = ft_lstp2back(&anthill->rooms, &room, sizeof(room))))
+		ft_exit(NULL, NULL);
+	ft_set_edge(in_room, out_room);
+	if (!ft_lstp2back(&anthill->map, line, ft_strlen(line) + 1))
 		ft_exit(NULL, NULL);
 	return (EXIT_SUCCESS);
 }

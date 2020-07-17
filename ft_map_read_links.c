@@ -12,12 +12,22 @@
 
 #include "lem-in.h"
 
+void ft_set_edge(t_list *in_room, t_list *out_room)
+{
+	t_link edge;
+	edge.room = out_room;
+	edge.flow = 0;
+	edge.disable = 0;
+	if (!ft_lstp2back(&((t_room*)(in_room->content))->connected_rooms, &edge, sizeof(edge)))
+		ft_exit(NULL, NULL);
+}
+
 int ft_is_link(char *line, t_anthill *anthill)
 {
 	char **room_names;
     t_list *room = NULL;
     t_list *connected_room = NULL;
-	t_link edge;
+//	t_link edge;
 
     if ((room_names = ft_strsplit(line, '-')) == NULL)
         ft_exit(NULL, NULL);
@@ -31,19 +41,13 @@ int ft_is_link(char *line, t_anthill *anthill)
     if ((room = ft_get_room_adress(room_names[0], anthill)) == NULL ||\
     (connected_room = ft_get_room_adress(room_names[1], anthill)) == NULL)
         ft_exit("Error: unknown room: ", line);
+	ft_set_edge(room->next, connected_room);
+	ft_set_edge(connected_room->next, room);
    // printf("%p - %p\n", room, connected_room);
    // printf("%s - %s\n", ((t_room*)(room->content))->name, ((t_room*)(connected_room->content))->name);
-	if (ft_lstp2back(&anthill->map, line, ft_strlen(line) + 1))//тупо для карты чтоб вывести
+	if (!ft_lstp2back(&anthill->map, line, ft_strlen(line) + 1))//тупо для карты чтоб вывести наверно не нужно
 		ft_exit(NULL, NULL);
-	edge.room = connected_room;
-	edge.flow = 0;
-	edge.disable = 0;
-    if (ft_lstp2back(&((t_room*)room->content)->connected_rooms, &edge, sizeof(edge)))
-		ft_exit(NULL, NULL);
-	edge.room = room;
-    if (ft_lstp2back(&((t_room*)connected_room->content)->connected_rooms, &edge, sizeof(edge))) 
-		ft_exit(NULL, NULL);
-	
+
     return (EXIT_SUCCESS);
 }
 

@@ -34,6 +34,7 @@ int	main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 	ft_map_read(&anthill);
+	ft_print_graf(&anthill);
 	//ft_find_path(&anthill);	
 	ft_karp(&anthill);
 }
