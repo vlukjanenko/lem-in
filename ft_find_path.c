@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/03 18:18:06 by majosue           #+#    #+#             */
-/*   Updated: 2020/07/16 06:50:04 by majosue          ###   ########.fr       */
+/*   Updated: 2020/07/19 22:50:47 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,29 +111,109 @@ t_link *ft_find_link(t_list *node, t_list *connected_room) //стоп стоп �
 
 	room = ft_get_room_from_anthill(node);
 	head = room->connected_rooms;
-	while (ft_get_room_adress_from_connected(head) != connected_room)
+	while (head && ft_get_room_adress_from_connected(head) != connected_room)
 	{
 		head = head->next;
 	}
 	return (ft_get_link_from_connected(head));
 }
 
+void ft_print_path(t_list *lst, t_list *start)
+{
+	t_list *room_adress;
+	t_room *room;
+	
+	while (lst)
+	{
+		room_adress = *(t_list**)(lst->content);
+		room = ft_get_room_from_anthill(room_adress);
+		printf("%s", room->name);
+		if (room_adress!= start && room->used)
+		{
+			printf("room alrady used");
+			exit(1);
+		}	
+		if (lst->next)
+		{
+			printf("->");
+			room->used = 1;
+		}
+	lst = lst->next;
+	}
+}
+void ft_reset_flows2(t_list *lst)
+{
+	t_list *room_adress;
+	t_list *connected_room_adress;
+/* 	t_room *room;
+	t_room *connected_room; */
+	if (lst->next)
+	{
+		room_adress = *(t_list**)(lst->content);
+		connected_room_adress = *(t_list**)(lst->next->content);
+		ft_find_link(room_adress, connected_room_adress)->flow -= 1;
+		if (ft_find_link(connected_room_adress, room_adress))
+			ft_find_link(connected_room_adress, room_adress)->flow += 1;
+	}
+}
+
+void ft_block_clean(t_anthill *anthill, t_list **path)
+{
+	t_list *apath;
+	t_list *prev;
+	
+	prev = NULL;
+	apath = anthill->paths;
+	if (*path)
+	{
+		ft_lstiter(*path, ft_reset_flows2);
+		ft_lstdel(path, del);
+	}
+	while (apath && apath->next)
+	{
+		prev = apath;
+		apath = apath->next;
+	}
+	ft_lstiter(*(t_list**)(apath->content), ft_reset_flows2);
+	ft_lstdel((t_list**)(apath->content), del);
+	
+	if (prev)
+	{
+		ft_lstdel(&apath, del);
+		prev->next = NULL;
+	}
+	else
+	{
+		ft_lstdel(&anthill->paths, del);
+	}
+}
+
 int ft_mark_path(t_anthill *anthill)
 {
 	t_list *room;
-	//t_list *rooms;
-	//t_list *tmp;
-	//int count_sutable;
+	t_list *path;
 
-	room = anthill->end_room;							// берём адресок конца из t_list rooms
-	while (room != anthill->start_room) // пока не добрались до старта
+	path = NULL;
+	room = anthill->end_room;							
+	while (room != anthill->start_room)
 	{
-				//ft_find_link(ft_get_room_adress_from_connected(ft_get_room_from_anthill(room)->from_room), room)->flow = 1; // тут что то не так метится
-				printf("%s <- ", ft_get_room_from_anthill(room)->name);
-				//ft_get_room_from_connected(rooms)->room_flow = 1;
+				ft_find_link(ft_get_room_from_anthill(room)->from_room, room)->flow += 1;
+				if (ft_find_link(room, ft_get_room_from_anthill(room)->from_room))
+				{
+					ft_find_link(room, ft_get_room_from_anthill(room)->from_room)->flow -= 1;
+				}
+				ft_lstadd(&path, ft_lstnew(&room, sizeof(room)));
+				if (ft_find_link(ft_get_room_from_anthill(room)->from_room, room)->flow == 0) 
+				{
+					ft_find_link(room, ft_get_room_from_anthill(room)->from_room)->disable = 1;
+					//ft_block_clean(anthill, &path);
+					ft_lstdel(&anthill->paths, del);
+					return (-1);
+				}
 				room = ft_get_room_from_anthill(room)->from_room;
 	}
-	printf("%s\n", ft_get_room_from_anthill(room)->name);
+	ft_lstadd(&path, ft_lstnew(&room, sizeof(room)));
+	ft_lstp2back(&anthill->paths, &path, sizeof(path));
 	return (1);
 }
 
@@ -180,14 +260,13 @@ int ft_find_augmenting_path(t_anthill *anthill)
 		rooms = ft_get_room_from_anthill(room)->connected_rooms; // получаем список адресов соседних комнат
 		while (rooms)
 		{
-			if (ft_get_room_from_connected(rooms)->visited == -1 && ft_get_link_from_connected(rooms)->flow == 0 && ft_get_link_from_connected(rooms)->disable == 0 /* && ft_get_room_from_connected(rooms)->room_flow == 0 */)
+			if (ft_get_room_from_connected(rooms)->visited == -1 && ft_get_link_from_connected(rooms)->capacity - ft_get_link_from_connected(rooms)->flow == 1 && ft_get_link_from_connected(rooms)->disable == 0 /* && ft_get_room_from_connected(rooms)->room_flow == 0 */)
 			{
 				ft_get_room_from_connected(rooms)->visited = ft_get_room_from_anthill(room)->visited + 1;
 				ft_get_room_from_connected(rooms)->from_room = room;
 				ft_lstp2back(&queue, &ft_get_link_from_connected(rooms)->room, sizeof(room));
 				if (ft_get_link_from_connected(rooms)->room == anthill->end_room)
 				{
-					//return (0);
 					ft_lstdel(&queue, del);
 					return (ft_mark_path(anthill));
 				}
@@ -239,7 +318,9 @@ int ft_karp(t_anthill *anthill)
 {
 	int max_flow;
 	int result;
-	
+	t_list *paths;
+
+	anthill->start_room = anthill->start_room->next;
 	ft_lstiter(anthill->rooms, ft_reset_visited);
 	max_flow = 0;
 	while (1)
@@ -260,5 +341,13 @@ int ft_karp(t_anthill *anthill)
 			break;
 	}
 printf("Maxflow = %d\n", max_flow);
+paths = anthill->paths;
+while (paths)
+{
+	ft_print_path(*(t_list**)(paths->content), anthill->start_room);
+	printf("\n");
+	paths = paths->next;
+}
+//ft_print_graf(anthill);
 return (1);
 }

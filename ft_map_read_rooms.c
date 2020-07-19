@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 18:23:10 by majosue           #+#    #+#             */
-/*   Updated: 2020/07/14 21:19:54 by majosue          ###   ########.fr       */
+/*   Updated: 2020/07/19 22:34:02 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,17 +56,21 @@ int		ft_add_room(t_anthill *anthill, char *line, int x, int y)
 	room.x = x;
 	room.y = y;
 	room.visited = -1;
-	room.out = 0;
+	room.used = 0;
 	room.connected_rooms = NULL;
 	room.name = ft_get_room_name(line);
 	if (ft_get_room_adress(room.name, anthill))
 		ft_exit("Error: room already exist", room.name);
 	if (!(in_room = ft_lstp2back(&anthill->rooms, &room, sizeof(room))))
 		ft_exit(NULL, NULL);
-	room.out = 1;
+	//room.out = 1;
+	room.name = ft_strjoin(room.name, "(OUT)");
 	if (!(out_room = ft_lstp2back(&anthill->rooms, &room, sizeof(room))))
 		ft_exit(NULL, NULL);
-	ft_set_edge(in_room, out_room);
+	ft_set_edge(in_room, out_room, 0, 1);
+	ft_set_edge(out_room, in_room, 0, 0);
+	
+
 	if (!ft_lstp2back(&anthill->map, line, ft_strlen(line) + 1))
 		ft_exit(NULL, NULL);
 	return (EXIT_SUCCESS);

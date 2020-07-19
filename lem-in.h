@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/20 12:35:07 by majosue           #+#    #+#             */
-/*   Updated: 2020/07/14 21:18:26 by majosue          ###   ########.fr       */
+/*   Updated: 2020/07/19 21:16:48 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ typedef struct  s_anthill
 	t_list	*end_room;
 	t_list	*map;
 	t_list	*rooms;
+	t_list	*paths;
 }               t_anthill;
 
 /*
@@ -47,7 +48,7 @@ typedef struct  s_room
 	int     x;
 	int     y;
 	int		visited;
-	int		out;
+	int		used;
 	t_list *from_room;
 	t_list *connected_rooms;
 }               t_room;
@@ -61,6 +62,7 @@ typedef struct	s_link
 {
 	t_list	*room; 
 	int		flow;
+	int		capacity;
 	int		disable;
 }				t_link;
 
@@ -86,7 +88,9 @@ int ft_karp(t_anthill *anthill);
 t_list *ft_get_room_adress_from_connected(t_list *connected_rooms);
 t_link *ft_get_link_from_connected(t_list *connected_rooms);
 t_room *ft_get_room_from_anthill(t_list *rooms);
-void ft_set_edge(t_list *in_room, t_list *out_room);
+void ft_set_edge(t_list *in_room, t_list *out_room, int flow, int capacity);
 void ft_print_graf(t_anthill *anthill);
+t_link *ft_find_link(t_list *node, t_list *connected_room);
+
 
 #endif
