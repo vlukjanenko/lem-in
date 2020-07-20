@@ -45,6 +45,10 @@ char	*ft_get_room_name(char *line)
 /*
 **	Try to save room if it is unic and don't have "-" sign
 **	in name
+**	добавляем комнату с карты в неё будут идти все входящие ребра, 
+**	а за ней сразу ещё одну из неё будут идти все исодящие.
+**	и связываем их прямым и обратным ребром. Разбиение на две комнаты
+**	ограничит пропускную способность комнаты
 */
 
 int		ft_add_room(t_anthill *anthill, char *line, int x, int y)
@@ -63,8 +67,7 @@ int		ft_add_room(t_anthill *anthill, char *line, int x, int y)
 		ft_exit("Error: room already exist", room.name);
 	if (!(in_room = ft_lstp2back(&anthill->rooms, &room, sizeof(room))))
 		ft_exit(NULL, NULL);
-	//room.out = 1;
-	room.name = ft_strjoin(room.name, "(OUT)");
+	room.name = ft_strjoin(room.name, "(OUT)"); //временно для отличия комнат
 	if (!(out_room = ft_lstp2back(&anthill->rooms, &room, sizeof(room))))
 		ft_exit(NULL, NULL);
 	ft_set_edge(in_room, out_room, 0, 1);

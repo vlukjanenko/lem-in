@@ -37,9 +37,9 @@ typedef struct  s_anthill
 }               t_anthill;
 
 /*
-**	Structure for rooms 
-**	(in connected_rooms we store adresses rooms from s_anthill)
-**	*(t_list**)(connected_rooms->content) = (t_list*)room from anthill
+**	Structure for rooms
+**	in connected_rooms
+**	we store (t_link*)(connected_rooms->content)
 */
 
 typedef struct  s_room
@@ -48,13 +48,14 @@ typedef struct  s_room
 	int     x;
 	int     y;
 	int		visited;
-	int		used;
+	int		used; // временно вспомогательная для проверки уникальности в путях
 	t_list *from_room;
 	t_list *connected_rooms;
 }               t_room;
 
 /*
 **	Structure for links
+**	in room we store anthill->rooms
 **	store (t_list*)room from anthill
 */
 
@@ -81,16 +82,15 @@ int		ft_array_len(char **array);
 int		ft_map_read_links(char **line,  t_anthill *anthill);
 void	del(void *content, size_t size);
 t_list	*ft_dequeue(t_list **queue);
-int		ft_find_path(t_anthill *anthill);
 int 	ft_get_flow_from_connected(t_list *connected_rooms);
 t_room	*ft_get_room_from_connected(t_list *connected_rooms);
-int ft_karp(t_anthill *anthill);
-t_list *ft_get_room_adress_from_connected(t_list *connected_rooms);
-t_link *ft_get_link_from_connected(t_list *connected_rooms);
-t_room *ft_get_room_from_anthill(t_list *rooms);
-void ft_set_edge(t_list *in_room, t_list *out_room, int flow, int capacity);
-void ft_print_graf(t_anthill *anthill);
-t_link *ft_find_link(t_list *node, t_list *connected_room);
+int		ft_karp(t_anthill *anthill);
+t_list	*ft_get_room_adress_from_connected(t_list *connected_rooms);
+t_link	*ft_get_link_from_connected(t_list *connected_rooms);
+t_room	*ft_get_room_from_anthill(t_list *rooms);
+void	ft_set_edge(t_list *in_room, t_list *out_room, int flow, int capacity);
+void	ft_print_graf(t_anthill *anthill);
+t_link	*ft_find_link(t_list *node, t_list *connected_room);
 
 
 #endif
