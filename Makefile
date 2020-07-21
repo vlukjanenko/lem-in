@@ -11,6 +11,7 @@
 # **************************************************************************** #
 
 NAME =  lem-in
+NAME2 = visuhex
 HEADER = lem-in.h
 INCLUDES = -I libft/ 
 LIBFT = libft/libft.a
@@ -22,10 +23,21 @@ ft_atoi_base.c ft_str_is_int.c ft_map_read_links.c ft_find_path.c
 OBJECTS = $(SOURCES:.c=.o)
 .PHONY: clean fclean re
 
-all: $(NAME)
+all: $(NAME) $(NAME2)
 
 $(NAME): $(OBJECTS) $(LIBFT)
 	$(COMPILERC) -o $(NAME) $(OBJECTS) $(INCLUDES) -L libft/ -lft
+	
+$(NAME2): ./visu-hex/bin/VisuHex.class ./visu-hex/src/VisuHex.java
+	echo '#!/bin/sh' > $(NAME2)
+	echo "java -cp ./visu-hex/lib/gs-core-1.3.jar:./visu-hex/bin VisuHex" >> $(NAME2)
+	chmod +x $(NAME2)
+
+./visu-hex/bin/VisuHex.class: ./visu-hex/src/VisuHex.java ./visu-hex/bin
+	javac -cp ./visu-hex/lib/gs-core-1.3.jar ./visu-hex/src/VisuHex.java -d ./visu-hex/bin
+
+./visu-hex/bin:
+	mkdir ./visu-hex/bin
 	
 $(LIBFT): libft/*.c libft/*.h	
 	@make -C libft/
@@ -35,6 +47,8 @@ $(LIBFT): libft/*.c libft/*.h
 
 clean:
 	@rm -f $(OBJECTS)
+	@rm -f $(NAME2)
+	@rm -rf ./visu-hex/bin
 	@make -C libft/ clean
 
 fclean: clean

@@ -43,7 +43,7 @@ int ft_is_link(char *line, t_anthill *anthill)
 	ft_set_edge(connected_room, room->next, 0, 0); // Обратное
 	ft_set_edge(connected_room->next, room, 0, 1); // прямое ребро
 	ft_set_edge(room, connected_room->next, 0, 0); // обратное
-  	if (!ft_lstp2back(&anthill->map, line, ft_strlen(line) + 1))//тупо для карты чтоб вывести наверно не нужно
+  	if (!ft_lstp2back(&anthill->map, line, ft_strlen(line) + 1))//для карты чтоб вывести потом
 		ft_exit(NULL, NULL);
     return (EXIT_SUCCESS);
 }

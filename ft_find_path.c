@@ -112,22 +112,26 @@ void ft_print_path(t_list *lst, t_list *start)
 {
 	t_list *room_adress;
 	t_room *room;
+	int i;
 
+	i = 0;
 	while (lst)
 	{
 		room_adress = *(t_list **)(lst->content);
 		room = ft_get_room_from_anthill(room_adress);
-		printf("%s", room->name);
+		if (i % 2)
+			printf("%s", room->name);
 		if (room_adress != start && room->used)
 		{
 			printf("room alrady used");
 			exit(1);
 		}
-		if (lst->next)
+		if (lst->next && i % 2)
 		{
 			printf("->");
 			room->used = 1;
 		}
+		i++;
 		lst = lst->next;
 	}
 }
@@ -249,7 +253,9 @@ int ft_karp(t_anthill *anthill)
 	int max_flow;
 	int result;
 	t_list *paths;
+	t_list *start;
 
+	start = anthill->start_room;
 	anthill->start_room = anthill->start_room->next;
 	ft_lstiter(anthill->rooms, ft_reset_visited);
 	max_flow = 0;
@@ -267,14 +273,26 @@ int ft_karp(t_anthill *anthill)
 			max_flow++; // предположительно тут надо отслеживать зависимость от количества муравьёв, количество путей, длины путей?
 			ft_lstiter(anthill->rooms, ft_reset_visited);
 		}
+		
 		else
 			break; //выходим когда путей уже нет.
+	/* 	if (max_flow == anthill->ants)
+			break; */
+	}
+	/* ----------------вывод карты----------------- */
+	paths = anthill->map;
+	while (paths)
+	{
+		printf("%s\n", (char*)(paths->content));
+		paths = paths->next;
 	}
 	/* ----------------вывод путей----------------- */
-	printf("Maxflow = %d\n", max_flow);
+	printf("#Maxflow = %d\n", max_flow);
 	paths = anthill->paths;
 	while (paths)
 	{
+		printf("##path\n");
+		printf("%s->", ft_get_room_from_anthill(start)->name);
 		ft_print_path(*(t_list **)(paths->content), anthill->start_room);
 		printf("\n");
 		paths = paths->next;
