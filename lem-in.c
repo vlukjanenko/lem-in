@@ -21,7 +21,8 @@ int	ft_map_read(t_anthill *anthill)
 	anthill->start_room = NULL;
 	anthill->end_room = NULL;
 	anthill->rooms = NULL;
-	anthill->paths = NULL;
+	anthill->path_set = NULL;
+	anthill->paths_set_number = 0;
 	ft_map_read_ants(&line, anthill);
 	ft_map_read_rooms(&line, anthill);
    	ft_map_read_links(&line, anthill);

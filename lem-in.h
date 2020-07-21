@@ -19,6 +19,18 @@
 # define TRUE 1
 # define FALSE 0
 
+typedef struct	s_path
+{
+	t_list	*path; // тут собственно будет путь (список) адресов комнат
+	int		path_len;	// тут длина пути
+}				t_path;
+
+typedef struct	s_path_set
+{
+	t_list	*paths; // тут набор путей для сета (t_path*)paths->content-> 
+	int		paths_number;	// тут количество путей в сете
+}				t_path_set;
+
 /*
 **	Structure for anthill
 **	in rooms we store rooms
@@ -33,7 +45,9 @@ typedef struct  s_anthill
 	t_list	*end_room;
 	t_list	*map;
 	t_list	*rooms;
-	t_list	*paths;
+	t_list	*path_set;
+	int		paths_set_number; // тут хранится номер оптимального набора путей
+	int		last_used_path; // тут последний используемый путь из набора
 }               t_anthill;
 
 /*
@@ -66,7 +80,6 @@ typedef struct	s_link
 	int		capacity;
 	int		disable;
 }				t_link;
-
 
 t_list	*ft_lstp2back(t_list **begin_list, void const *content, size_t content_size);
 int     ft_map_read_ants(char **line, t_anthill *anthill);

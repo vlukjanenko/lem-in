@@ -124,7 +124,7 @@ void ft_print_path(t_list *lst, t_list *start)
 		if (room_adress != start && room->used)
 		{
 			printf("room alrady used");
-			exit(1);
+		//	exit(1);
 		}
 		if (lst->next && i % 2)
 		{
@@ -134,6 +134,32 @@ void ft_print_path(t_list *lst, t_list *start)
 		i++;
 		lst = lst->next;
 	}
+}
+
+void	ft_add_path_set(t_anthill *anthill)
+{
+	t_path_set	new_path_set;
+	
+	new_path_set.path.path = NULL;
+	new_path_set.path.path_len = 0;
+	new_path_set.paths = 0;
+	if (!ft_lstp2back(&anthill->path_set, &new_path_set, sizeof(new_path_set)))
+		ft_exit(NULL, NULL);
+}
+
+void	ft_add_path_to_set(t_anthill *anthill, t_list **path)
+{
+	t_list *path_set;
+	(void)path;
+	path_set = anthill->path_set;
+	printf("Адрес патсета %p\n", path_set);
+	printf("Адрес патсета некст %p\n", path_set->next);
+	while(path_set->next)
+	{
+		path_set = path_set->next;
+	}
+	ft_lstp2back(&(((t_path_set*)(path_set->content))->path.path), path, sizeof *path);
+	
 }
 
 /*
@@ -163,13 +189,18 @@ int ft_mark_path(t_anthill *anthill)
 			/* вот тут надо дополнитель чистить пути. А может не просто вычищать а сохранять. 
 					Если мало муравьёв все непересекающиенся пути не нужны? Нужны Кратчайшие? Надо подумать
 					так же в ft_get_room_from_anthill(end_room)->visited лежит длинна пути. Её тоже надо сохранять */
-			ft_lstdel(&anthill->paths, del);
+			//ft_lstdel(&anthill->paths, del);
+			ft_lstdel(&path, del);
+			ft_add_path_set(anthill);
 			return (-1);
 		}
 		room = ft_get_room_from_anthill(room)->from_room;
 	}
-	ft_lstadd(&path, ft_lstnew(&room, sizeof(room)));
-	ft_lstp2back(&anthill->paths, &path, sizeof(path));
+	//ft_lstadd(&path, ft_lstnew(&room, sizeof(room))); // добавляет стартовую комнату. Оно нам не надо!
+	if (anthill->path_set == NULL)
+		ft_add_path_set(anthill);
+	ft_add_path_to_set(anthill, &path);
+	//ft_lstp2back(&anthill->path_set->, &path, sizeof(path));
 	return (1);
 }
 
@@ -288,7 +319,7 @@ int ft_karp(t_anthill *anthill)
 	}
 	/* ----------------вывод путей----------------- */
 	printf("#Maxflow = %d\n", max_flow);
-	paths = anthill->paths;
+	/* paths = anthill->paths;
 	while (paths)
 	{
 		printf("##path\n");
@@ -297,6 +328,21 @@ int ft_karp(t_anthill *anthill)
 		printf("\n");
 		paths = paths->next;
 	}
-	/* ----------------------------------------------*/
+	*/
+	/* ----------------------------------------------*/ 
+	paths = anthill->path_set;
+	t_list *paths2;
+	int i = 0;
+	while (paths)
+	{
+		printf("Pathset - %d\n", i);
+		paths2 = ((t_path_set*)(paths->content))->path.path;
+		while (paths2)
+		{
+			ft_print_path(*(t_list **)(paths2->content), anthill->start_room);		
+			
+		}
+		paths = paths->next;
+	}
 	return (1);
 }
