@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/03 18:18:06 by majosue           #+#    #+#             */
-/*   Updated: 2020/07/19 22:50:47 by majosue          ###   ########.fr       */
+/*   Updated: 2020/07/23 07:58:35 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ void ft_print_path(t_list *lst, t_list *start)
 			printf("%s", room->name);
 		if (room_adress != start && room->used)
 		{
-			printf("room alrady used");
+		//	printf("room alrady used");
 		//	exit(1);
 		}
 		if (lst->next && i % 2)
@@ -140,26 +140,29 @@ void	ft_add_path_set(t_anthill *anthill)
 {
 	t_path_set	new_path_set;
 	
-	new_path_set.path.path = NULL;
-	new_path_set.path.path_len = 0;
-	new_path_set.paths = 0;
+	new_path_set.paths = NULL;
+	new_path_set.paths_number = 0;
 	if (!ft_lstp2back(&anthill->path_set, &new_path_set, sizeof(new_path_set)))
 		ft_exit(NULL, NULL);
 }
 
 void	ft_add_path_to_set(t_anthill *anthill, t_list **path)
 {
+	t_path	new_path;
 	t_list *path_set;
-	(void)path;
+
+	//-------------заполнили новый path----------
+	new_path.path = NULL;
+	ft_lstp2back(&new_path.path, path, sizeof *path);
+	new_path.path_len = ft_get_room_from_anthill(anthill->end_room)->visited / 2 + 1;
+	
 	path_set = anthill->path_set;
-	printf("Адрес патсета %p\n", path_set);
-	printf("Адрес патсета некст %p\n", path_set->next);
 	while(path_set->next)
 	{
-		path_set = path_set->next;
+		path_set = path_set->next; //спустились к последнему сету
 	}
-	ft_lstp2back(&(((t_path_set*)(path_set->content))->path.path), path, sizeof *path);
-	
+	ft_lstp2back(&((t_path_set*)(path_set->content))->paths, &new_path, sizeof new_path);
+	((t_path_set*)(path_set->content))->paths_number++;
 }
 
 /*
@@ -196,7 +199,7 @@ int ft_mark_path(t_anthill *anthill)
 		}
 		room = ft_get_room_from_anthill(room)->from_room;
 	}
-	//ft_lstadd(&path, ft_lstnew(&room, sizeof(room))); // добавляет стартовую комнату. Оно нам не надо!
+	ft_lstadd(&path, ft_lstnew(&room, sizeof(room))); // добавляет стартовую комнату. Оно нам не надо!
 	if (anthill->path_set == NULL)
 		ft_add_path_set(anthill);
 	ft_add_path_to_set(anthill, &path);
@@ -330,19 +333,28 @@ int ft_karp(t_anthill *anthill)
 	}
 	*/
 	/* ----------------------------------------------*/ 
-	paths = anthill->path_set;
-	t_list *paths2;
+	t_list *set = anthill->path_set;
+	t_list *path;
 	int i = 0;
-	while (paths)
+	//int lines = 0;
+	//int ants = anthill->ants;
+	while (set)
 	{
-		printf("Pathset - %d\n", i);
-		paths2 = ((t_path_set*)(paths->content))->path.path;
-		while (paths2)
+		printf("Pathset = %d\n", i);
+		path = ((t_path_set*)(set->content))->paths;
+		int firstpath = ((t_path*)(path->content))->path_len;
+		printf("first path len %d\n", firstpath);
+		while (path)
 		{
-			ft_print_path(*(t_list **)(paths2->content), anthill->start_room);		
-			
+			printf("##path\n");
+			ft_print_path(*(t_list **)((((t_path*)(path->content))->path)->content), anthill->start_room);			
+			printf("\n");
+			path = path->next;
 		}
-		paths = paths->next;
+		i++;
+		set = set->next;
 	}
+
+
 	return (1);
 }
