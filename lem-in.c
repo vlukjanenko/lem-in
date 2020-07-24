@@ -12,6 +12,50 @@
 
 #include "lem-in.h"
 
+
+void	del_path(void *content, size_t size)
+{
+	if (content)
+	{
+		ft_lstdel(&((t_path*)(content))->path, del);
+		ft_bzero(content, size);
+		ft_memdel(&content);
+	}
+}
+
+void	del_pathset(void *content, size_t size)
+{
+	if (content)
+	{
+		ft_lstdel(&((t_path_set*)(content))->paths, del_path);
+		ft_bzero(content, size);
+		ft_memdel(&content);
+	}
+}
+
+void	del_room(void *content, size_t size)
+{
+	if (content)
+	{
+		ft_strclr(((t_room*)(content))->name);
+		ft_strdel(&((t_room*)(content))->name);
+		ft_lstdel(&((t_room*)(content))->connected_rooms, del);
+		ft_bzero(content, size);
+		ft_memdel(&content);
+	}
+}
+
+
+void	ft_free_antchill(t_anthill *anthill)
+{
+	if (anthill->map)
+		ft_lstdel(&(anthill->map), del);
+	if (anthill->rooms)
+		ft_lstdel(&(anthill->rooms), del_room);
+	if (anthill->path_set)
+		ft_lstdel(&(anthill->path_set), del_pathset);
+}
+
 int	ft_map_read(t_anthill *anthill)
 {
 	char *line;
@@ -39,5 +83,6 @@ int	main(int argc, char **argv)
 //	ft_print_graf(&anthill);
 	//ft_find_path(&anthill);	
 	ft_karp(&anthill);
- //ft_print_graf(&anthill);
+	ft_free_antchill(&anthill);
+//ft_print_graf(&anthill);
 }

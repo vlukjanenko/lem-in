@@ -61,6 +61,7 @@ int		ft_add_room(t_anthill *anthill, char *line, int x, int y)
 	room.y = y;
 	room.visited = -1;
 	room.used = 0;
+	room.exist = 1; // реальная комната в нее все линки входят
 	room.connected_rooms = NULL;
 	room.name = ft_get_room_name(line);
 	if (ft_get_room_adress(room.name, anthill))
@@ -68,12 +69,13 @@ int		ft_add_room(t_anthill *anthill, char *line, int x, int y)
 	if (!(in_room = ft_lstp2back(&anthill->rooms, &room, sizeof(room))))
 		ft_exit(NULL, NULL);
 	room.name = ft_strjoin(room.name, "(OUT)"); //временно для отличия комнат
+	// и для последубщей очистки нужно выделить память либо чистить через один
+	//room.name = ft_strdup(room.name);
+	room.exist = 0; // фиктивная комната из нее все линки выходят
 	if (!(out_room = ft_lstp2back(&anthill->rooms, &room, sizeof(room))))
 		ft_exit(NULL, NULL);
 	ft_set_edge(in_room, out_room, 0, 1);
 	ft_set_edge(out_room, in_room, 0, 0);
-	
-
 	if (!ft_lstp2back(&anthill->map, line, ft_strlen(line) + 1))
 		ft_exit(NULL, NULL);
 	return (EXIT_SUCCESS);

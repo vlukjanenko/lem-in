@@ -112,26 +112,22 @@ void ft_print_path(t_list *lst, t_list *start)
 {
 	t_list *room_adress;
 	t_room *room;
-	int i;
-
-	i = 0;
+	
 	while (lst)
 	{
 		room_adress = *(t_list **)(lst->content);
 		room = ft_get_room_from_anthill(room_adress);
-		if (i % 2)
-			printf("%s", room->name);
+		printf("%s", room->name);
 		if (room_adress != start && room->used)
 		{
 		//	printf("room alrady used");
 		//	exit(1);
 		}
-		if (lst->next && i % 2)
+		if (lst->next)
 		{
 			printf("->");
 			room->used = 1;
 		}
-		i++;
 		lst = lst->next;
 	}
 }
@@ -156,6 +152,8 @@ void	ft_add_path_to_set(t_anthill *anthill, t_list **path)
 	ft_lstp2back(&new_path.path, path, sizeof *path);
 	new_path.path_len = ft_get_room_from_anthill(anthill->end_room)->visited / 2 + 1;
 	
+	if (!anthill->path_set)
+		ft_add_path_set(anthill);
 	path_set = anthill->path_set;
 	while(path_set->next)
 	{
@@ -163,6 +161,16 @@ void	ft_add_path_to_set(t_anthill *anthill, t_list **path)
 	}
 	ft_lstp2back(&((t_path_set*)(path_set->content))->paths, &new_path, sizeof new_path);
 	((t_path_set*)(path_set->content))->paths_number++;
+}
+
+void ft_add_room_to_path(t_list** path, t_list** room)
+{
+	t_list *new;
+
+	new = NULL;
+	if (!(new = ft_lstnew(room, sizeof(*room))))
+		ft_exit(NULL, NULL);
+	ft_lstadd(path, new);
 }
 
 /*
@@ -181,11 +189,9 @@ int ft_mark_path(t_anthill *anthill)
 	while (room != anthill->start_room)
 	{
 		ft_find_link(ft_get_room_from_anthill(room)->from_room, room)->flow += 1;
-		if (ft_find_link(room, ft_get_room_from_anthill(room)->from_room))
-		{
-			ft_find_link(room, ft_get_room_from_anthill(room)->from_room)->flow -= 1;
-		}
-		ft_lstadd(&path, ft_lstnew(&room, sizeof(room))); // будет падать если не отработает ft_lstnew
+		ft_find_link(room, ft_get_room_from_anthill(room)->from_room)->flow -= 1;
+		if (ft_get_room_from_anthill(room)->exist)
+			ft_add_room_to_path(&path, &room);
 		if (ft_find_link(ft_get_room_from_anthill(room)->from_room, room)->flow == 0)
 		{
 			ft_find_link(room, ft_get_room_from_anthill(room)->from_room)->disable = 1;
@@ -199,11 +205,8 @@ int ft_mark_path(t_anthill *anthill)
 		}
 		room = ft_get_room_from_anthill(room)->from_room;
 	}
-	ft_lstadd(&path, ft_lstnew(&room, sizeof(room))); // добавляет стартовую комнату. Оно нам не надо!
-	if (anthill->path_set == NULL)
-		ft_add_path_set(anthill);
+	ft_add_room_to_path(&path, &room); // добавляет стартовую комнату. Оно нам надо?
 	ft_add_path_to_set(anthill, &path);
-	//ft_lstp2back(&anthill->path_set->, &path, sizeof(path));
 	return (1);
 }
 
@@ -307,37 +310,37 @@ int ft_karp(t_anthill *anthill)
 			max_flow++; // предположительно тут надо отслеживать зависимость от количества муравьёв, количество путей, длины путей?
 			ft_lstiter(anthill->rooms, ft_reset_visited);
 		}
-		
 		else
 			break; //выходим когда путей уже нет.
-	/* 	if (max_flow == anthill->ants)
+	/* 	if (max_flow == anthill->ants) //возможная оптимизация
 			break; */
 	}
+	anthill->start_room = start;
+
 	/* ----------------вывод карты----------------- */
 	paths = anthill->map;
+	char *line;
+	line = "";
+	//int len = 0;
 	while (paths)
 	{
+		
+		/* len = ft_strlen((char*)(paths->content));
+		write(1, (char*)(paths->content), len);
+		write(1, "\n", 1); */
 		printf("%s\n", (char*)(paths->content));
+		/* line = ft_strjoin(line,(char*)(paths->content));
+		line = ft_strjoin(line,"\n"); */
 		paths = paths->next;
 	}
+
 	/* ----------------вывод путей----------------- */
 	printf("#Maxflow = %d\n", max_flow);
-	/* paths = anthill->paths;
-	while (paths)
-	{
-		printf("##path\n");
-		printf("%s->", ft_get_room_from_anthill(start)->name);
-		ft_print_path(*(t_list **)(paths->content), anthill->start_room);
-		printf("\n");
-		paths = paths->next;
-	}
-	*/
-	/* ----------------------------------------------*/ 
-	t_list *set = anthill->path_set;
 	t_list *path;
 	int i = 0;
 	//int lines = 0;
 	//int ants = anthill->ants;
+	t_list *set =  anthill->path_set;
 	while (set)
 	{
 		printf("Pathset = %d\n", i);
@@ -354,7 +357,5 @@ int ft_karp(t_anthill *anthill)
 		i++;
 		set = set->next;
 	}
-
-
 	return (1);
 }

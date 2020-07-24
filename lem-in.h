@@ -63,6 +63,7 @@ typedef struct  s_room
 	int     y;
 	int		visited;
 	int		used; // временно вспомогательная для проверки уникальности в путях
+	int		exist;
 	t_list *from_room;
 	t_list *connected_rooms;
 }               t_room;
