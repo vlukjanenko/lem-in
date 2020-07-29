@@ -132,35 +132,65 @@ void ft_print_path(t_list *lst, t_list *start)
 	}
 }
 
-void	ft_add_path_set(t_anthill *anthill)
+int		ft_add_path_set(t_anthill *anthill)
 {
 	t_path_set	new_path_set;
-	
+	t_list *new;
+
+	if (anthill->path_set && anthill->path_set->next && anthill->number_lines > ((t_path_set*)(anthill->path_set->next->content))->number_lines)
+	{
+		anthill->number_lines = ((t_path_set*)(anthill->path_set->next->content))->number_lines;
+		//стираем верхний сет
+		//не не стираем
+		// g
+		//решение найдено
+		return (0);
+	}
 	new_path_set.paths = NULL;
 	new_path_set.paths_number = 0;
-	if (!ft_lstp2back(&anthill->path_set, &new_path_set, sizeof(new_path_set)))
+	anthill->number_lines = -1;
+	new = ft_lstnew(&new_path_set, sizeof(new_path_set));
+	if (!new)
 		ft_exit(NULL, NULL);
+	ft_lstadd(&anthill->path_set, new);
+	//ищем дальше
+	return (-1);
+	/* if (!ft_lstp2back(&anthill->path_set, &new_path_set, sizeof(new_path_set)))
+		ft_exit(NULL, NULL); */
 }
 
-void	ft_add_path_to_set(t_anthill *anthill, t_list **path)
+int	ft_add_path_to_set(t_anthill *anthill, t_list **path)
 {
 	t_path	new_path;
 	t_list *path_set;
 
+	
+	
 	//-------------заполнили новый path----------
 	new_path.path = NULL;
-	ft_lstp2back(&new_path.path, path, sizeof *path);
+	
+	ft_lstp2back(&new_path.path, path, sizeof *path); 
 	new_path.path_len = ft_get_room_from_anthill(anthill->end_room)->visited / 2 + 1;
+	new_path.path_capacity = 0;
+	new_path.path_flow = 0;
 	
 	if (!anthill->path_set)
 		ft_add_path_set(anthill);
 	path_set = anthill->path_set;
-	while(path_set->next)
-	{
-		path_set = path_set->next; //спустились к последнему сету
-	}
+	((t_path_set*)(path_set->content))->number_lines = ft_find_nbr_lines(anthill, ((t_path_set*)(path_set->content))->paths_number, new_path.path_len);
+	if (anthill->number_lines == -1 || anthill->number_lines >= ((t_path_set*)(path_set->content))->number_lines) // если поставить >= он продолжит искать и найдет оптимальней чем просит карта из генератора
+			anthill->number_lines =  ((t_path_set*)(path_set->content))->number_lines;
+		else
+		{
+			// сравниваем с количеством линий на предидущем наборе
+			// Если этот набор хуже, удаляем его.
+			// оставляем наверху старый.
+			// подчищаем patth
+			return(0);
+		}
 	ft_lstp2back(&((t_path_set*)(path_set->content))->paths, &new_path, sizeof new_path);
 	((t_path_set*)(path_set->content))->paths_number++;
+	return (1);
 }
 
 void ft_add_room_to_path(t_list** path, t_list** room)
@@ -195,19 +225,15 @@ int ft_mark_path(t_anthill *anthill)
 		if (ft_find_link(ft_get_room_from_anthill(room)->from_room, room)->flow == 0)
 		{
 			ft_find_link(room, ft_get_room_from_anthill(room)->from_room)->disable = 1;
-			/* вот тут надо дополнитель чистить пути. А может не просто вычищать а сохранять. 
-					Если мало муравьёв все непересекающиенся пути не нужны? Нужны Кратчайшие? Надо подумать
-					так же в ft_get_room_from_anthill(end_room)->visited лежит длинна пути. Её тоже надо сохранять */
-			//ft_lstdel(&anthill->paths, del);
 			ft_lstdel(&path, del);
-			ft_add_path_set(anthill);
-			return (-1);
+			// вот тут надо считать количество линий, заполнять емкости путей
+			// сравнивать с предидущими
+			return (ft_add_path_set(anthill));
 		}
 		room = ft_get_room_from_anthill(room)->from_room;
 	}
 	ft_add_room_to_path(&path, &room); // добавляет стартовую комнату. Оно нам надо?
-	ft_add_path_to_set(anthill, &path);
-	return (1);
+	return (ft_add_path_to_set(anthill, &path));
 }
 
 /*
@@ -285,6 +311,75 @@ int ft_get_number_links(t_list *lst)
 	return (number);
 }
 
+int ft_get_rest_ants(t_anthill *anthill, int ants, int last_used_path, int last_path_len)
+{
+	int i;
+	int a;
+	t_list *path;
+
+	path = ((t_path_set*)(anthill->path_set->content))->paths;
+	a = ants - 1;
+	i = 0;
+	while (i < last_used_path)
+	{
+		a = a - 1 - (last_path_len - ((t_path*)(path->content))->path_len);
+		if (a <= 0)
+			return (0);
+		i++;
+		path = path->next;
+	}	
+	return (a);
+}
+
+int ft_get_last_used_path_len(t_anthill *anthill, int last_used_path) // это не понадобится
+{
+	int i;
+	t_list *path;
+
+	path = ((t_path_set*)(anthill->path_set->content))->paths;
+	i = 0;
+	while (i < last_used_path)
+	{
+		i++;
+		path = path->next;
+	}
+	return (((t_path*)(path->content))->path_len);
+}
+
+int ft_find_nbr_lines(t_anthill *anthill, int last_used_path, int last_used_path_len)
+{
+	int rest_ants;
+	int rest_ants2;
+	int nbr_lines;
+
+	rest_ants = ft_get_rest_ants(anthill, anthill->ants, last_used_path, last_used_path_len);
+	rest_ants2 = (rest_ants % (last_used_path + 1)) == 0 ? 0 : 1;
+	nbr_lines = last_used_path_len + rest_ants / (last_used_path + 1) + rest_ants2;
+	return (nbr_lines);
+}
+
+int ft_find_optimal_nbr_lines(t_anthill *anthill) // это в адд ту патсет будет делаться.
+{
+	int i;
+	int number_lines;
+	int current_nbr_lines;
+	t_list *set;
+
+	i = 0;
+	set = anthill->path_set;
+	number_lines = -1;
+	while (i < ((t_path_set*)(set->content))->paths_number)
+	{
+		current_nbr_lines = ft_find_nbr_lines(anthill, i, 1);
+		if (number_lines == -1 || number_lines > current_nbr_lines) // если поставить >= он продолжит искать и найдет оптимальней чем просит карта из генератора
+			number_lines = current_nbr_lines;
+		else
+			break;
+		i++;
+	}
+	return (number_lines);
+}
+
 int ft_karp(t_anthill *anthill)
 {
 	int max_flow;
@@ -357,5 +452,8 @@ int ft_karp(t_anthill *anthill)
 		i++;
 		set = set->next;
 	}
+	//printf("Optimal number lines - %d", ft_find_optimal_nbr_lines(anthill));
+	printf("Optimal number lines - %d", anthill->number_lines);
+
 	return (1);
 }

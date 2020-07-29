@@ -66,7 +66,7 @@ int	ft_map_read(t_anthill *anthill)
 	anthill->end_room = NULL;
 	anthill->rooms = NULL;
 	anthill->path_set = NULL;
-	anthill->paths_set_number = 0;
+	anthill->number_lines = -1;
 	ft_map_read_ants(&line, anthill);
 	ft_map_read_rooms(&line, anthill);
    	ft_map_read_links(&line, anthill);

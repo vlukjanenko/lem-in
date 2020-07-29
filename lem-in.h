@@ -22,12 +22,15 @@
 typedef struct	s_path
 {
 	t_list	*path; // тут собственно будет путь (список) адресов комнат
+	int		path_capacity;
+	int		path_flow;
 	int		path_len;	// тут длина пути
 }				t_path;
 
 typedef struct	s_path_set
 {
 	t_list	*paths; // тут набор путей для сета (t_path*)paths->content-> 
+	int		number_lines;
 	int		paths_number;	// тут количество путей в сете
 }				t_path_set;
 
@@ -46,7 +49,7 @@ typedef struct  s_anthill
 	t_list	*map;
 	t_list	*rooms;
 	t_list	*path_set;
-	int		paths_set_number; // тут хранится номер оптимального набора путей
+	int		number_lines; // тут хранится номер оптимального набора путей
 	int		last_used_path; // тут последний используемый путь из набора
 }               t_anthill;
 
@@ -105,6 +108,6 @@ t_room	*ft_get_room_from_anthill(t_list *rooms);
 void	ft_set_edge(t_list *in_room, t_list *out_room, int flow, int capacity);
 void	ft_print_graf(t_anthill *anthill);
 t_link	*ft_find_link(t_list *node, t_list *connected_room);
-
+int		ft_find_nbr_lines(t_anthill *anthill, int last_used_path, int last_used_path_len);
 
 #endif
