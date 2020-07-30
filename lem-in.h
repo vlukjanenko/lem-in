@@ -22,16 +22,17 @@
 typedef struct	s_path
 {
 	t_list	*path; // тут собственно будет путь (список) адресов комнат
-	int		path_capacity;
-	int		path_flow;
+	int		path_capacity; // тут емкость пути
+	int		path_flow;	// тут сколько муравьев заружено в путь.
 	int		path_len;	// тут длина пути
+	int		ants_in_path; // тут наличие муравьев в пути
 }				t_path;
 
 typedef struct	s_path_set
 {
 	t_list	*paths; // тут набор путей для сета (t_path*)paths->content-> 
 	int		number_lines;
-	int		paths_number;	// тут количество путей в сете
+	int		paths_number;	// тут количество путей в сете !!! не нужно. Выкинуть.
 }				t_path_set;
 
 /*
@@ -109,5 +110,9 @@ void	ft_set_edge(t_list *in_room, t_list *out_room, int flow, int capacity);
 void	ft_print_graf(t_anthill *anthill);
 t_link	*ft_find_link(t_list *node, t_list *connected_room);
 int		ft_find_nbr_lines(t_anthill *anthill, int last_used_path, int last_used_path_len);
+void	del_path(void *content, size_t size);
+void	del_pathset(void *content, size_t size);
+
+
 
 #endif
