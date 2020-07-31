@@ -68,6 +68,7 @@ typedef struct  s_room
 	int		visited;
 	int		used; // временно вспомогательная для проверки уникальности в путях
 	int		exist;
+	char	*ant;
 	t_list *from_room;
 	t_list *connected_rooms;
 }               t_room;

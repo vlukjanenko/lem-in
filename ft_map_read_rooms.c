@@ -61,6 +61,7 @@ int		ft_add_room(t_anthill *anthill, char *line, int x, int y)
 	room.y = y;
 	room.visited = -1;
 	room.used = 0;
+	room.ant = NULL;
 	room.exist = 1; // реальная комната в нее все линки входят
 	room.connected_rooms = NULL;
 	room.name = ft_get_room_name(line);
