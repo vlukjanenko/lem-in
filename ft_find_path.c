@@ -131,6 +131,37 @@ int		ft_add_path_set(t_anthill *anthill)
 	/* if (!ft_lstp2back(&anthill->path_set, &new_path_set, sizeof(new_path_set)))
 		ft_exit(NULL, NULL); */
 }
+int		ft_get_lastpath_len(t_anthill *anthill)
+{
+	t_list *path;
+	t_path_set	*paths;
+
+
+	paths = (t_path_set*)(anthill->path_set->content);
+	path = paths->paths;
+	while (path->next)
+	{
+		path = path->next;
+	}
+	return(((t_path*)(path->content))->path_len);
+}
+
+void	ft_del_last_path_from_set(t_anthill *anthill)
+{
+	t_path_set *paths;
+	t_list *path;
+	t_list *prev_path;
+	
+	paths = (t_path_set*)(anthill->path_set->content);
+	path = paths->paths;
+	while (path->next)
+	{
+		prev_path = path;
+		path = path->next;
+	}
+	ft_lstdelone(&path, del_path);
+	prev_path->next = NULL;
+}
 
 int	ft_add_path_to_set(t_anthill *anthill, t_list *path)
 {
@@ -141,18 +172,7 @@ int	ft_add_path_to_set(t_anthill *anthill, t_list *path)
 		ft_add_path_set(anthill);
 	new_path.path_len = ft_get_room_from_anthill(anthill->end_room)->visited / 2 + 1;
 	path_set = anthill->path_set;
-	((t_path_set*)(path_set->content))->number_lines = ft_find_nbr_lines(anthill, ((t_path_set*)(path_set->content))->paths_number, new_path.path_len);
-	if (anthill->number_lines == -1 || anthill->number_lines >= ((t_path_set*)(path_set->content))->number_lines) // если поставить >= он продолжит искать и найдет оптимальней чем просит карта из генератора
-			anthill->number_lines =  ((t_path_set*)(path_set->content))->number_lines;
-		else
-		{
-			ft_lstdel(&path, del);
-			// сравниваем с количеством линий на предидущем наборе
-			// Если этот набор хуже, удаляем его.
-			// !!!!!не не не удаляем удалим в конце перед выводом!!!!
-			// подчищаем patth
-			return(0);
-		}
+	
 	new_path.path = NULL;
 	
 	
@@ -161,11 +181,31 @@ int	ft_add_path_to_set(t_anthill *anthill, t_list *path)
 	new_path.path = path;
 
 	
-	new_path.path_capacity = 1;
+	new_path.path_capacity = 0;
 	new_path.path_flow = 0;
 	new_path.ants_in_path = 0;
 	ft_lstp2back(&((t_path_set*)(path_set->content))->paths, &new_path, sizeof new_path);
 	((t_path_set*)(path_set->content))->paths_number++;
+
+	((t_path_set*)(path_set->content))->number_lines = ft_find_nbr_lines(anthill, ((t_path_set*)(path_set->content))->paths_number, new_path.path_len);
+	if (anthill->number_lines == -1 || anthill->number_lines >= ((t_path_set*)(path_set->content))->number_lines) // если поставить >= он продолжит искать и найдет оптимальней чем просит карта из генератора
+			{
+				anthill->number_lines =  ((t_path_set*)(path_set->content))->number_lines;
+			}
+		else
+		{
+			((t_path_set*)(path_set->content))->paths_number--;
+			ft_del_last_path_from_set(anthill);
+			int len;
+			len = ft_get_lastpath_len(anthill);
+			ft_find_nbr_lines(anthill, ((t_path_set*)(path_set->content))->paths_number, len);
+			// сравниваем с количеством линий на предидущем наборе
+			// Если этот набор хуже, удаляем его.
+			// !!!!!не не не удаляем удалим в конце перед выводом!!!!
+			// подчищаем patth
+			return(0);
+		}
+
 	return (1);
 }
 
@@ -313,20 +353,17 @@ int ft_get_number_links(t_list *lst)
 
 int ft_get_rest_ants(t_anthill *anthill, int ants, int last_used_path, int last_path_len)
 {
-	int i;
 	int a;
 	t_list *path;
-
+	(void)last_used_path;
 	path = ((t_path_set*)(anthill->path_set->content))->paths;
-	a = ants - 1;
-	i = 0;
-	while (i < last_used_path)
+	a = ants;
+	while (path)
 	{
 		a = a - 1 - (last_path_len - ((t_path*)(path->content))->path_len);
 		((t_path*)(path->content))->path_capacity = 1 + (last_path_len - ((t_path*)(path->content))->path_len);
 		if (a <= 0)
 			return (0);
-		i++;
 		path = path->next;
 	}	
 	return (a);
@@ -343,7 +380,7 @@ void ft_reditrub_ants(t_anthill *anthill, int last_used_path, int rest_ants)
 	rest = rest_ants % (last_used_path + 1);
 	while (paths)
 	{
-		((t_path*)(paths->content))->path_capacity += each_path_addon + ((rest < 0) ? 0 : 1);
+		((t_path*)(paths->content))->path_capacity += each_path_addon + ((rest > 0) ? 1 : 0);
 		rest--;
 		paths = paths->next;
 	}
@@ -454,6 +491,7 @@ void ft_put_ant_to_path(t_list *path, int *j)
 	path_body = path_header->path;
 	if (!(index = ft_itoa(*j)))
 		ft_exit(NULL, NULL);
+	printf("%s\n", index);
 	if (!(ant_name = ft_strjoin("L", index)))
 		ft_exit(NULL, NULL);
 	free(index);
@@ -490,7 +528,7 @@ void ft_run_ants(t_anthill *anthill)
 	
 	i = 0;
 	j = 1;
-	while (i < anthill->number_lines)
+	while (i < anthill->number_lines + 10)
 	{
 		ft_push_ants(anthill, &j);
 		i++;
