@@ -83,6 +83,6 @@ int	main(int argc, char **argv)
 //	ft_print_graf(&anthill);
 	//ft_find_path(&anthill);	
 	ft_karp(&anthill);
-//	ft_free_antchill(&anthill);
+	ft_free_antchill(&anthill);
 //ft_print_graf(&anthill);
 }
