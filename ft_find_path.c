@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/03 18:18:06 by majosue           #+#    #+#             */
-/*   Updated: 2020/07/31 22:35:44 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/02 01:51:10 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,9 +191,12 @@ int ft_mark_path(t_anthill *anthill)
 {
 	t_list *room;
 	t_list *path;
+	int block;
 
+	block = 0;
 	path = NULL;
 	room = anthill->end_room;
+	//ft_add_path_set(anthill);
 	while (room != anthill->start_room)
 	{
 		ft_find_link(ft_get_room_from_anthill(room)->from_room, room)->flow += 1;
@@ -204,13 +207,23 @@ int ft_mark_path(t_anthill *anthill)
 		}
 		if (ft_find_link(ft_get_room_from_anthill(room)->from_room, room)->flow == 0)
 		{
-			ft_find_link(room, ft_get_room_from_anthill(room)->from_room)->disable = 1;
-			ft_lstdel(&path, del);
-			return (ft_add_path_set(anthill));
+			block = 1;
+			if (anthill->block == 0)
+			{
+				ft_find_link(room, ft_get_room_from_anthill(room)->from_room)->disable = 1;
+			}
+			//ft_lstdel(&path, del);
+			//return (ft_add_path_set(anthill));
 		}
 		room = ft_get_room_from_anthill(room)->from_room;
 	}
 	//ft_add_room_to_path(&path, (void*)room); // добавляет стартовую комнату. Оно нам надо?
+	if (block)
+	{
+		ft_lstdel(&path, del);
+		anthill->block = 1;
+		return (1);
+	}
 	return (ft_add_path_to_set(anthill, path));
 }
 
@@ -523,6 +536,13 @@ int ft_karp(t_anthill *anthill)
 		}
 		else if (result == 1)
 			ft_lstiter(anthill->rooms, ft_reset_visited);
+		else if (result == 0 && anthill->block == 1)
+		{
+			ft_reset_flows(anthill); // сброс потоков
+			anthill->block = 0;
+			ft_add_path_set(anthill);
+			ft_lstiter(anthill->rooms, ft_reset_visited); // сброс посещенных комнат
+		}
 		else
 			break;
 	}

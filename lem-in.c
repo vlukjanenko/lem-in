@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/20 12:33:02 by majosue           #+#    #+#             */
-/*   Updated: 2020/07/31 20:46:05 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/01 20:17:45 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ int	ft_map_read(t_anthill *anthill)
 	anthill->rooms = NULL;
 	anthill->path_set = NULL;
 	anthill->number_lines = -1;
+	anthill->block = 0;
 	ft_map_read_ants(&line, anthill);
 	ft_map_read_rooms(&line, anthill);
    	ft_map_read_links(&line, anthill);

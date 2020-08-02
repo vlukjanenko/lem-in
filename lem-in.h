@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/20 12:35:07 by majosue           #+#    #+#             */
-/*   Updated: 2020/07/19 21:16:48 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/01 20:28:36 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct  s_anthill
 	t_list	*path_set;
 	int		number_lines; // тут хранится номер оптимального набора путей
 	int		last_used_path; // тут последний используемый путь из набора
+	int 	block;
 }               t_anthill;
 
 /*
