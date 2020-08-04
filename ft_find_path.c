@@ -176,8 +176,6 @@ int	ft_add_path_to_set(t_anthill *anthill, t_list *path)
 	new_path.path = NULL;
 	
 	
-	//ft_lstp2back(&new_path.path, path, sizeof *path); // вот тут какая то херня
-	// думаю должно быть так
 	new_path.path = path;
 
 	
@@ -188,7 +186,7 @@ int	ft_add_path_to_set(t_anthill *anthill, t_list *path)
 	((t_path_set*)(path_set->content))->paths_number++;
 
 	((t_path_set*)(path_set->content))->number_lines = ft_find_nbr_lines(anthill, ((t_path_set*)(path_set->content))->paths_number, new_path.path_len);
-	if (anthill->number_lines == -1 || anthill->number_lines > ((t_path_set*)(path_set->content))->number_lines) // если поставить >= он продолжит искать и найдет оптимальней чем просит карта из генератора
+	if (anthill->number_lines == -1 || anthill->number_lines >= ((t_path_set*)(path_set->content))->number_lines) // если поставить >= он продолжит искать и найдет оптимальней чем просит карта из генератора
 			{
 				anthill->number_lines =  ((t_path_set*)(path_set->content))->number_lines;
 			}
@@ -199,10 +197,7 @@ int	ft_add_path_to_set(t_anthill *anthill, t_list *path)
 			int len;
 			len = ft_get_lastpath_len(anthill);
 			ft_find_nbr_lines(anthill, ((t_path_set*)(path_set->content))->paths_number, len);
-			// сравниваем с количеством линий на предидущем наборе
-			// Если этот набор хуже, удаляем его.
-			// !!!!!не не не удаляем удалим в конце перед выводом!!!!
-			// подчищаем patth
+			
 			return(0);
 		}
 
@@ -344,10 +339,8 @@ int ft_get_number_links(t_list *lst)
 
 /*
 **	Распределяем начальное количество муравьёв по путям
-**	Берем последний путь вычитаем из колчиесва муравьев 1
-**  потом предпоследний и вычитаем 1 и разницу длин с последним
-**	и так до первого пути.
-**	возвращаем остаток муравьев
+**	в каждый путь по 1 муравью + разницу длин последнего и текущего
+**	возвращаем остаток нераспределенных муравьев
 */
 
 
@@ -557,6 +550,7 @@ int ft_karp(t_anthill *anthill)
 			ft_add_path_set(anthill); // добавление в результат нового набора путей
 			ft_reset_flows(anthill); // сброс потоков
 			ft_lstiter(anthill->rooms, ft_reset_visited); // сброс посещенных комнат
+			anthill->number_lines = -1;
 			anthill->block = 0;	
 		}
 		else
