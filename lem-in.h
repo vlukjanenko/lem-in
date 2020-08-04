@@ -16,6 +16,7 @@
 # include "get_next_line.h"
 # include <stdio.h>
 # include <limits.h>
+# include <time.h>
 # define TRUE 1
 # define FALSE 0
 
@@ -50,9 +51,9 @@ typedef struct  s_anthill
 	t_list	*map;
 	t_list	*rooms;
 	t_list	*path_set;
-	int		number_lines; // тут хранится номер оптимального набора путей
-	int		last_used_path; // тут последний используемый путь из набора
-	int 	block;
+	int		number_lines; // тут хранится количество  линий в решении
+	//int		last_used_path; // тут последний используемый путь из набора !!! не нужно в сете хранится  количество путей и оно будет не больше чем нужно
+	int 	block; // тут 1 если в списке путей надено обратное ребро
 }               t_anthill;
 
 /*
@@ -114,7 +115,5 @@ t_link	*ft_find_link(t_list *node, t_list *connected_room);
 int		ft_find_nbr_lines(t_anthill *anthill, int last_used_path, int last_used_path_len);
 void	del_path(void *content, size_t size);
 void	del_pathset(void *content, size_t size);
-
-
 
 #endif

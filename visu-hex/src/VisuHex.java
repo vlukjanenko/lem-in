@@ -32,12 +32,14 @@ public class VisuHex {
 			if (line.matches("##start")) {
 				line = scanner.nextLine();	
 				start = graph.addNode(line.split("\\s")[0]);
+				start.addAttribute("ui.label", "start " + line.split("\\s")[0]);
 				continue;
 			}
 			
 			if (line.matches("##end")) {
 				line = scanner.nextLine();	
 				end = graph.addNode(line.split("\\s")[0]);
+				end.addAttribute("ui.label", "end " + line.split("\\s")[0]);
 				continue;
 			}
 
@@ -46,18 +48,18 @@ public class VisuHex {
 			} */
 
 			if (line.matches(".+\\s\\d+\\s\\d+")) {
-				graph.addNode(line.split("\\s")[0]);
+				graph.addNode(line.split("\\s")[0]).addAttribute("ui.label", line.split("\\s")[0]);
 				continue;
 			}
 
-			if (line.split("-").length == 2) {
+			if (line.split("-").length == 2 && line.charAt(0) != 'L') {
 				graph.addEdge(line.split("-")[0] + line.split("-")[1],
 				line.split("-")[0], line.split("-")[1]);
 				continue;
 			}
 
-			if (line.matches("##path")) {
-				line = scanner.nextLine();
+			if (line.matches("##path.*")) {
+				line = start.getId() + "->" + line.split("\\s")[1];
 				//System.out.println(line);
 				String[] room = line.split("->");
 				for (int i = 0; i < room.length - 1; i++) {
@@ -72,9 +74,8 @@ public class VisuHex {
 				continue;
 			}
 		}
-		start.addAttribute("ui.label", "start");
+		
 		start.setAttribute("ui.class", "marked");
-		end.addAttribute("ui.label", "end");
 		end.setAttribute("ui.class", "marked");
 		scanner.close();
 		graph.display();

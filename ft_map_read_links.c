@@ -29,7 +29,7 @@ int ft_is_link(char *line, t_anthill *anthill)
     t_list *room = NULL;
     t_list *connected_room = NULL;
 
-    if ((room_names = ft_strsplit(line, '-')) == NULL)
+	if ((room_names = ft_strsplit(line, '-')) == NULL)
         ft_exit(NULL, NULL);
 	if (ft_array_len(room_names) != 2)
     {

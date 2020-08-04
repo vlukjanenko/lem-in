@@ -12,6 +12,18 @@
 
 #include "lem-in.h"
 
+time_t start_time;
+double point[4];
+
+double passed_time()
+{
+	time_t now;
+	double dif;
+	now = time(NULL);
+	dif = difftime(now, start_time);
+	start_time = now;
+	return (dif);
+}
 
 void	del_path(void *content, size_t size)
 {
@@ -70,7 +82,9 @@ int	ft_map_read(t_anthill *anthill)
 	anthill->block = 0;
 	ft_map_read_ants(&line, anthill);
 	ft_map_read_rooms(&line, anthill);
+	point[0] = passed_time();
    	ft_map_read_links(&line, anthill);
+	point[1] = passed_time();
 	return (EXIT_SUCCESS);
 }
 
@@ -78,12 +92,14 @@ int	main(int argc, char **argv)
 {
 	t_anthill anthill;
 
+	start_time = time(NULL);
 	(void)argc;
 	(void)argv;
 	ft_map_read(&anthill);
-//	ft_print_graf(&anthill);
-	//ft_find_path(&anthill);	
 	ft_karp(&anthill);
+	point[2] = passed_time();
+	printf("Map read rooms take %3.1fs\n", point[0]);
+	printf("Map read links take %3.1fs\n", point[1]);
+	printf("Algo run take %3.1fs\n", point[2]);
 	ft_free_antchill(&anthill);
-//ft_print_graf(&anthill);
 }
