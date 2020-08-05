@@ -550,7 +550,6 @@ int ft_karp(t_anthill *anthill)
 			ft_add_path_set(anthill); // добавление в результат нового набора путей
 			ft_reset_flows(anthill); // сброс потоков
 			ft_lstiter(anthill->rooms, ft_reset_visited); // сброс посещенных комнат
-			anthill->number_lines = -1;
 			anthill->block = 0;	
 		}
 		else
