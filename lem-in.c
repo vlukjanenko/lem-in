@@ -50,6 +50,8 @@ void	del_room(void *content, size_t size)
 	if (content)
 	{
 		ft_strclr(((t_room*)(content))->name);
+		if (((t_room*)(content))->ant)
+			free(((t_room*)(content))->ant);
 		ft_strdel(&((t_room*)(content))->name);
 		ft_lstdel(&((t_room*)(content))->connected_rooms, del);
 		ft_bzero(content, size);

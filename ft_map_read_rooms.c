@@ -114,6 +114,8 @@ int		ft_is_room(char *line, t_anthill *anthill)
 
 int		ft_get_start_end(char *line, t_anthill *anthill)
 {
+	char *name = NULL;
+
 	if (ft_strequ(line, "##start"))
 	{
 		if (anthill->start_room)
@@ -122,7 +124,8 @@ int		ft_get_start_end(char *line, t_anthill *anthill)
 			ft_exit(NULL, NULL);
 		if (ft_is_room(line, anthill))
 			ft_exit("Error: expected room instead:", line);
-		anthill->start_room = ft_get_room_adress(ft_get_room_name(line), anthill);
+		name = ft_get_room_name(line);
+		anthill->start_room = ft_get_room_adress(name, anthill);
 	}
 	else
 	{
@@ -132,8 +135,10 @@ int		ft_get_start_end(char *line, t_anthill *anthill)
 			ft_exit(NULL, NULL);
 		if (ft_is_room(line, anthill))
 			ft_exit("Error: expected room instead:", line);
-		anthill->end_room = ft_get_room_adress(ft_get_room_name(line), anthill);
-	}
+		name = ft_get_room_name(line);
+		anthill->end_room = ft_get_room_adress(name, anthill);	
+		}
+	free(name);
 	free(line);
 	return (EXIT_SUCCESS);
 }

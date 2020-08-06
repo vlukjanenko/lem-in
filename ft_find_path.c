@@ -110,15 +110,15 @@ int		ft_add_path_set(t_anthill *anthill)
 {
 	t_path_set	new_path_set;
 	t_list *new;
-
-	if (anthill->path_set && anthill->path_set->next && anthill->number_lines >= ((t_path_set*)(anthill->path_set->next->content))->number_lines)
+	printf("LL%d\n",anthill->number_lines);
+	/* if (anthill->path_set && anthill->path_set->next && anthill->number_lines > ((t_path_set*)(anthill->path_set->next->content))->number_lines)
 	{
 		//стираем верхний сет
 		//!!!!!! не не стираем!!!!!
 		//Сотрем в конце после отработки
 		//решение найдено
 		return (0);
-	}
+	} */
 	new_path_set.paths = NULL;
 	new_path_set.paths_number = 0;
 	anthill->number_lines = -1;
@@ -193,12 +193,13 @@ int	ft_add_path_to_set(t_anthill *anthill, t_list *path)
 		else
 		{
 			((t_path_set*)(path_set->content))->paths_number--;
+			((t_path_set*)(path_set->content))->number_lines = anthill->number_lines;
 			ft_del_last_path_from_set(anthill);
 			int len;
 			len = ft_get_lastpath_len(anthill);
 			ft_find_nbr_lines(anthill, ((t_path_set*)(path_set->content))->paths_number, len);
 			
-			return(0);
+		//	return(0);
 		}
 
 	return (1);
@@ -450,7 +451,10 @@ void ft_shift_ants(t_list *path)
 		if (ft_get_room_from_anthill(room)->ant)
 		{
 			ft_strclr(ft_get_room_from_anthill(room)->ant);
-			ft_strdel(&ft_get_room_from_anthill(room)->ant);
+			free(ft_get_room_from_anthill(room)->ant);
+			ft_get_room_from_anthill(room)->ant = NULL;
+			//ft_strdel(&ft_get_room_from_anthill(room)->ant);
+
 		}
 	}
 }
@@ -547,7 +551,17 @@ int ft_karp(t_anthill *anthill)
 			ft_lstiter(anthill->rooms, ft_reset_visited); // сброс посещенных комнат
 		else if (result == 0 && anthill->block == 1)
 		{
-			ft_add_path_set(anthill); // добавление в результат нового набора путей
+			//if (ft_add_path_set(anthill) == 0) // добавление в результат нового набора путей
+			//	break;
+			if (anthill->path_set && anthill->path_set->next && anthill->number_lines > ((t_path_set*)(anthill->path_set->next->content))->number_lines)
+	{
+		//стираем верхний сет
+		//!!!!!! не не стираем!!!!!
+		//Сотрем в конце после отработки
+		//решение найдено
+		break;
+	} 
+			ft_add_path_set(anthill);
 			ft_reset_flows(anthill); // сброс потоков
 			ft_lstiter(anthill->rooms, ft_reset_visited); // сброс посещенных комнат
 			anthill->block = 0;	
