@@ -32,8 +32,9 @@ typedef struct	s_path
 typedef struct	s_path_set
 {
 	t_list	*paths; // тут набор путей для сета (t_path*)paths->content-> 
-	int		number_lines;
-	int		paths_number;	// тут количество путей в сете !!! не нужно. Выкинуть.
+	int		number_lines; // тут локальный минимум линий для провода муравьев
+	int		paths_number;	// тут количество путей в сете.
+	int		optimal;
 }				t_path_set;
 
 /*
