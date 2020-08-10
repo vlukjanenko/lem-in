@@ -189,7 +189,10 @@ int	ft_add_path_to_set(t_anthill *anthill, t_list *path)
 	new_path = ft_new_path_init(anthill, path);
 	ps = (t_path_set*)(anthill->path_set->content);
 	if (ps->optimal)
+	{
+		ft_lstdel(&path, del);
 		return(1);
+	}
 	if (!(ft_lstp2back(&ps->paths, &new_path, sizeof new_path)))
 		ft_exit(NULL, NULL);
 	ps->paths_number++;
@@ -201,12 +204,12 @@ int	ft_add_path_to_set(t_anthill *anthill, t_list *path)
 	return (1);
 }
 
-void ft_add_room_to_path(t_list** path, t_list *room)
+void ft_add_room_to_path(t_list** path, t_list **room)
 {
 	t_list *new;
 
 	new = NULL;
-	if (!(new = ft_lstnew(&room, sizeof(room))))
+	if (!(new = ft_lstnew(&(*room), sizeof(*room))))
 		ft_exit(NULL, NULL);
 	ft_lstadd(path, new);
 }
@@ -234,7 +237,7 @@ int ft_mark_path(t_anthill *anthill)
 		ft_find_link(room, ft_get_room_from_anthill(room)->from_room)->flow -= 1;
 		if (ft_get_room_from_anthill(room)->exist)
 		{
-			ft_add_room_to_path(&path, room);
+			ft_add_room_to_path(&path, &room);
 		}
 		if (ft_find_link(ft_get_room_from_anthill(room)->from_room, room)->flow == 0)
 		{
@@ -427,9 +430,11 @@ void	ft_select_optimal_path_set(t_anthill *anthill) // вои эту перед�
 	n = ft_find_optimal_path_set_position(anthill);
 	while (i < n)
 	{
-		set = anthill->path_set->next;
-		ft_lstdelone(&anthill->path_set, del_pathset); 
-		anthill->path_set = set;
+		printf("%d\n", n);
+		set = anthill->path_set;
+		anthill->path_set = anthill->path_set->next;
+		set->next = NULL;
+		ft_lstdel(&set, del_pathset); 
 		i++;
 	}
 }
@@ -582,10 +587,10 @@ int ft_karp(t_anthill *anthill)
 	}
 	anthill->start_room = start;
 
-	ft_print_map(anthill);
+	//ft_print_map(anthill);
 	ft_select_optimal_path_set(anthill);
-	ft_print_selected_paths(((t_path_set*)(anthill->path_set->content))->paths);
+	//ft_print_selected_paths(((t_path_set*)(anthill->path_set->content))->paths);
 	printf("##Optimal number lines  %d\n", anthill->number_lines);
-	ft_run_ants(anthill);
+	//ft_run_ants(anthill);
 	return (1);
 }

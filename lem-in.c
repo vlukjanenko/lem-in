@@ -90,6 +90,27 @@ int	ft_map_read(t_anthill *anthill)
 	return (EXIT_SUCCESS);
 }
 
+void test_del_path(t_anthill *anthill)
+{
+	t_path_set *path;
+	t_path *path_head;
+	t_list *p;
+	t_list *ph;
+
+	path = (t_path_set*)(anthill->path_set->content);
+	ph = path->paths;
+	while (path)
+	{
+		ph = path->paths;
+	}
+	path_head = (t_path*)(path->paths->content);
+	p = path_head->path;
+	ft_lstdel(&p, del);
+	ft_lstdel(&path->paths, del);
+	ft_lstdel(&anthill->path_set, del);
+
+}
+
 int	main(int argc, char **argv)
 {
 	t_anthill anthill;
@@ -103,5 +124,6 @@ int	main(int argc, char **argv)
 	printf("Map read rooms take %3.1fs\n", point[0]);
 	printf("Map read links take %3.1fs\n", point[1]);
 	printf("Algo run take %3.1fs\n", point[2]);
+	//test_del_path(&anthill);
 	ft_free_antchill(&anthill);
 }
