@@ -6,27 +6,28 @@
 #    By: majosue <majosue@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/13 10:14:46 by majosue           #+#    #+#              #
-#    Updated: 2020/05/03 18:51:42 by majosue          ###   ########.fr        #
+#    Updated: 2020/08/11 15:54:09 by majosue          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME =  lem-in
+NAME = lem-in
 NAME2 = visuhex
 HEADER = lem-in.h
-INCLUDES = -I libft/ 
+INCLUDES = -I libft/ -I libftprintf/
 LIBFT = libft/libft.a
+LIBFTPRINTF = libftprintf/libftprintf.a
 COMPILERC = gcc
 FLAGS = -Wall -Wextra -Werror -g
 SOURCES  =  lem-in.c ft_lstp2back.c ft_map_read_ants.c ft_map_read_rooms.c \
 ft_atoi_base.c ft_str_is_int.c ft_map_read_links.c ft_find_path.c
-
 OBJECTS = $(SOURCES:.c=.o)
+CLEAN := standalone
 .PHONY: clean fclean re
 
 all: $(NAME) $(NAME2)
 
-$(NAME): $(OBJECTS) $(LIBFT)
-	$(COMPILERC) -o $(NAME) $(OBJECTS) $(INCLUDES) -L libft/ -lft
+$(NAME): $(OBJECTS) $(LIBFT) $(LIBFTPRINTF)
+	$(COMPILERC) -o $(NAME) $(OBJECTS) $(INCLUDES) -L libft/ -lft -L libftprintf/ -lftprintf
 	
 $(NAME2): ./visu-hex/bin/VisuHex.class ./visu-hex/src/VisuHex.java
 	echo '#!/bin/sh' > $(NAME2)
@@ -42,6 +43,9 @@ $(NAME2): ./visu-hex/bin/VisuHex.class ./visu-hex/src/VisuHex.java
 $(LIBFT): libft/*.c libft/*.h	
 	@make -C libft/
 
+$(LIBFTPRINTF): $(LIBFT) libftprintf/*.c libftprintf/*.h
+	@make -C libftprintf/
+
 %.o: %.c $(HEADER)
 	$(COMPILERC) $(FLAGS) $(INCLUDES) -o $@ -c $< 
 
@@ -50,9 +54,11 @@ clean:
 	@rm -f $(NAME2)
 	@rm -rf ./visu-hex/bin
 	@make -C libft/ clean
+	@make -C libftprintf/ clean
 
 fclean: clean
 	@rm -f $(NAME)
 	@make -C libft/ fclean
+	@make -C libftprintf/ fclean
 
 re: fclean all

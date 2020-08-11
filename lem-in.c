@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/20 12:33:02 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/01 20:17:45 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/10 18:43:48 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,9 +121,9 @@ int	main(int argc, char **argv)
 	ft_map_read(&anthill);
 	ft_karp(&anthill);
 	point[2] = passed_time();
-	printf("Map read rooms take %3.1fs\n", point[0]);
-	printf("Map read links take %3.1fs\n", point[1]);
-	printf("Algo run take %3.1fs\n", point[2]);
+	ft_printf("Map read rooms take %3.1fs\n", point[0]);
+	ft_printf("Map read links take %3.1fs\n", point[1]);
+	ft_printf("Algo run take %3.1fs\n", point[2]);
 	//test_del_path(&anthill);
 	ft_free_antchill(&anthill);
 }

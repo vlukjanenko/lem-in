@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/03 18:18:06 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/02 01:51:10 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/11 14:39:12 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@ void ft_print_graf(t_anthill *anthill)
 		head2 = ft_get_room_from_anthill(head)->connected_rooms;
 		while (head2)
 		{
-			printf("%s - %s flow [%d][%d]\n", ((t_room *)(head->content))->name, ft_get_room_from_connected(head2)->name, ft_get_link_from_connected(head2)->flow, ft_get_link_from_connected(head2)->disable);
+			ft_printf("%s - %s flow [%d][%d]\n", ((t_room *)(head->content))->name, ft_get_room_from_connected(head2)->name, ft_get_link_from_connected(head2)->flow, ft_get_link_from_connected(head2)->disable);
 			head2 = head2->next;
 		}
-		printf("\n");
+		ft_printf("\n");
 		head = head->next;
 	}
 }
@@ -110,7 +110,7 @@ int		ft_add_path_set(t_anthill *anthill)
 {
 	t_path_set	new_path_set;
 	t_list *new;
-	printf("LL%d\n",anthill->number_lines);
+	ft_printf("LL%d\n", anthill->number_lines);
 	new_path_set.paths = NULL;
 	new_path_set.paths_number = 0;
 	new_path_set.optimal = 0;
@@ -430,7 +430,7 @@ void	ft_select_optimal_path_set(t_anthill *anthill) // вои эту перед�
 	n = ft_find_optimal_path_set_position(anthill);
 	while (i < n)
 	{
-		printf("%d\n", n);
+		ft_printf("%d\n", n);
 		set = anthill->path_set;
 		anthill->path_set = anthill->path_set->next;
 		set->next = NULL;
@@ -467,7 +467,7 @@ void ft_shift_ants(t_list *path)
 		ft_get_room_from_anthill(room)->ant = NULL;
 		if (ft_get_room_from_anthill(next_room)->ant)
 		{		
-			printf("%s-%s ", ft_get_room_from_anthill(next_room)->ant, ft_get_room_from_anthill(next_room)->name);
+			ft_printf("%s-%s ", ft_get_room_from_anthill(next_room)->ant, ft_get_room_from_anthill(next_room)->name);
 		}
 	}
 	else if (path)
@@ -503,7 +503,7 @@ void ft_put_ant_to_path(t_list *path, int *j)
 	ft_lstiter(path_body, ft_shift_ants);
 	room = *(t_list**)(path_body->content);
 	ft_get_room_from_anthill(room)->ant = ant_name;
-	printf("%s-%s ", ft_get_room_from_anthill(room)->ant, ft_get_room_from_anthill(room)->name);
+	ft_printf("%s-%s ", ft_get_room_from_anthill(room)->ant, ft_get_room_from_anthill(room)->name);
 }
 
 void ft_push_ants(t_anthill *anthill, int *j)
@@ -537,7 +537,7 @@ void ft_run_ants(t_anthill *anthill)
 	{
 		ft_push_ants(anthill, &j);
 		i++;
-		printf("\n");
+		ft_printf("\n");
 	}
 }
 
@@ -548,15 +548,15 @@ void ft_print_selected_paths(t_list *paths)
 	while (paths)
 	{
 		path = ((t_path*)(paths->content))->path;
-		printf("##path ");
+		ft_printf("##path ");
 		while (path)
 		{
-			printf("%s", ((t_room*)((*(t_list**)(path->content))->content))->name);
+			ft_printf("%s", ((t_room*)((*(t_list**)(path->content))->content))->name);
 			if (path->next)
-				printf("->");
+				ft_printf("->");
 			path = path->next;
 		}
-		printf("\n");
+		ft_printf("\n");
 		paths = paths->next;
 	}
 }
@@ -587,10 +587,10 @@ int ft_karp(t_anthill *anthill)
 	}
 	anthill->start_room = start;
 
-	//ft_print_map(anthill);
+	ft_print_map(anthill);
 	ft_select_optimal_path_set(anthill);
-	//ft_print_selected_paths(((t_path_set*)(anthill->path_set->content))->paths);
-	printf("##Optimal number lines  %d\n", anthill->number_lines);
-	//ft_run_ants(anthill);
+	ft_print_selected_paths(((t_path_set*)(anthill->path_set->content))->paths);
+	ft_printf("##Optimal number lines  %d\n", anthill->number_lines);
+	ft_run_ants(anthill);
 	return (1);
 }
