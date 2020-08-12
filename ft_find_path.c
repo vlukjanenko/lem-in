@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/03 18:18:06 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/11 14:39:12 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/12 21:58:36 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ int		ft_add_path_set(t_anthill *anthill)
 	ft_printf("LL%d\n", anthill->number_lines);
 	new_path_set.paths = NULL;
 	new_path_set.paths_number = 0;
-	new_path_set.optimal = 0;
+	//new_path_set.optimal = 0;
 	new = ft_lstnew(&new_path_set, sizeof(new_path_set));
 	if (!new)
 		ft_exit(NULL, NULL);
@@ -164,7 +164,6 @@ t_path	ft_new_path_init(t_anthill *anthill, t_list *path)
 	new_path.path = path;
 	new_path.path_capacity = 0;
 	new_path.path_flow = 0;
-	new_path.ants_in_path = 0;
 	new_path.path_len = ft_get_room_from_anthill(anthill->end_room)->visited / 2 + 1;
 	return (new_path);
 }
@@ -177,7 +176,6 @@ void ft_roll_back_to_optimal(t_anthill *anthill)
 	ps = anthill->path_set->content;
 	ft_del_last_path_from_set(anthill);
 	len = ft_get_lastpath_len(anthill);
-	ps->optimal = 1;
 	ps->number_lines = ft_find_nbr_lines(anthill, ps->paths_number, len);
 }
 
@@ -188,11 +186,6 @@ int	ft_add_path_to_set(t_anthill *anthill, t_list *path)
 
 	new_path = ft_new_path_init(anthill, path);
 	ps = (t_path_set*)(anthill->path_set->content);
-	if (ps->optimal)
-	{
-		ft_lstdel(&path, del);
-		return(1);
-	}
 	if (!(ft_lstp2back(&ps->paths, &new_path, sizeof new_path)))
 		ft_exit(NULL, NULL);
 	ps->paths_number++;
@@ -200,8 +193,11 @@ int	ft_add_path_to_set(t_anthill *anthill, t_list *path)
 	if (anthill->number_lines == -1 || anthill->number_lines >= ps->number_lines) 
 		anthill->number_lines = ps->number_lines;
 	else
-		ft_roll_back_to_optimal(anthill);
-	return (1);
+	{
+		ft_roll_back_to_optimal(anthill); // убираем последний путь 
+		return(0); // 0 дойдет до карпа, остановит поиск путей в этом сете
+	}
+	return (1); // ищем следующий путь
 }
 
 void ft_add_room_to_path(t_list** path, t_list **room)
@@ -217,7 +213,7 @@ void ft_add_room_to_path(t_list** path, t_list **room)
 /*
 **	Размечает поток по найденому пути
 **	проверяет проверяет нет ли в пути обратных ребер
-**	и сохраняет найденые пути если не нашла обратных
+**	и сохраняет найденые пути кроме обратных
 **	расчетное количество линий ухудшается с добавлением
 **	нового пути останавливает дальнейшие поиски
 */
@@ -253,17 +249,16 @@ int ft_mark_path(t_anthill *anthill)
 	if (block)
 	{
 		ft_lstdel(&path, del);
-		anthill->block = 1;
 		return (1);
 	}
-	return (ft_add_path_to_set(anthill, path));
+	return (ft_add_path_to_set(anthill, path)); 
 }
 
 /*
 **	Поиск дополнительного пути
 */
 
-int ft_find_augmenting_path(t_anthill *anthill)
+int ft_find_augmenting_path(t_anthill *anthill) 
 {
 	t_list *queue;
 	t_list *room;
@@ -271,7 +266,7 @@ int ft_find_augmenting_path(t_anthill *anthill)
 
 	queue = NULL;
 	ft_get_room_from_anthill(anthill->start_room)->visited = 0;
-	ft_lstp2back(&queue, &anthill->start_room, sizeof(room)); // кладём адресок в очередь
+	ft_lstp2back(&queue, &anthill->start_room, sizeof(room)); // кладём адресок в очередь !!! не забыть проверку на отработку ft_lstp2back
 	while (queue)											  // пока очередь не пуста
 	{
 		room = ft_dequeue(&queue);								 // берем адрес комнаты из очереди
@@ -284,7 +279,7 @@ int ft_find_augmenting_path(t_anthill *anthill)
 			{
 				ft_get_room_from_connected(rooms)->visited = ft_get_room_from_anthill(room)->visited + 1;
 				ft_get_room_from_connected(rooms)->from_room = room;
-				ft_lstp2back(&queue, &ft_get_link_from_connected(rooms)->room, sizeof(room));
+				ft_lstp2back(&queue, &ft_get_link_from_connected(rooms)->room, sizeof(room)); //не забыть проверку на отработку ft_lstp2back
 				if (ft_get_link_from_connected(rooms)->room == anthill->end_room)
 				{
 					ft_lstdel(&queue, del);
@@ -296,6 +291,10 @@ int ft_find_augmenting_path(t_anthill *anthill)
 	}
 	return (0);
 }
+
+/*
+**	Сброс потоков у всех ребер в 0
+*/
 
 void ft_reset_flows(t_anthill *anthill)
 {
@@ -315,79 +314,19 @@ void ft_reset_flows(t_anthill *anthill)
 	}
 }
 
+/*
+**	Сброс посещенных у всех комнат в 0
+*/
+
 void ft_reset_visited(t_list *lst)
 {
 	ft_get_room_from_anthill(lst)->visited = -1;
 	ft_get_room_from_anthill(lst)->from_room = NULL;
 }
 
-/* int ft_get_number_links(t_list *lst)
-{
-	int number;
-
-	number = 0;
-	while (lst)
-	{
-		number++;
-		lst = lst->next;
-	}
-	return (number);
-}
- */
 /*
-**	Распределяем начальное количество муравьёв по путям
-**	в каждый путь по 1 муравью + разницу длин последнего и текущего
-**	возвращаем остаток нераспределенных муравьев
+**	Find index of pathset with minimal line numbers 
 */
-
-
-int ft_get_rest_ants(t_anthill *anthill, int ants, int last_path_len)
-{
-	int a;
-	t_list *path;
-
-	path = ((t_path_set*)(anthill->path_set->content))->paths;
-	a = ants;
-	while (path)
-	{
-		a = a - 1 - (last_path_len - ((t_path*)(path->content))->path_len);
-		((t_path*)(path->content))->path_capacity = 1 + (last_path_len - ((t_path*)(path->content))->path_len);
-		if (a < 0)
-			 a = 0;
-		path = path->next;
-	}
-	return (a);
-}
-
-void ft_reditrub_ants(t_anthill *anthill, int number_paths, int rest_ants)
-{
-	t_list *paths;
-	int each_path_addon;
-	int rest;
-	
-	paths = ((t_path_set*)(anthill->path_set->content))->paths;
-	each_path_addon	= rest_ants / number_paths;
-	rest = rest_ants % number_paths;
-	while (paths)
-	{
-		((t_path*)(paths->content))->path_capacity += each_path_addon + ((rest > 0) ? 1 : 0);
-		rest--;
-		paths = paths->next;
-	}
-}
-
-int ft_find_nbr_lines(t_anthill *anthill, int paths_number, int last_used_path_len)
-{
-	int rest_ants; 
-	int rest_ants2;
-	int nbr_lines;
-
-	rest_ants = ft_get_rest_ants(anthill, anthill->ants, last_used_path_len);
-	ft_reditrub_ants(anthill, paths_number, rest_ants);
-	rest_ants2 = (rest_ants % paths_number) == 0 ? 0 : 1;
-	nbr_lines = last_used_path_len + rest_ants / paths_number + rest_ants2;
-	return (nbr_lines);
-}
 
 int ft_find_optimal_path_set_position(t_anthill *anthill)
 {
@@ -414,7 +353,11 @@ int ft_find_optimal_path_set_position(t_anthill *anthill)
 	return (position);
 }
 
-void	ft_select_optimal_path_set(t_anthill *anthill) // вои эту переделать чтоб искала по всем сетам
+/*
+**	Remove path_set until optimal stay first
+*/
+
+void	ft_select_optimal_path_set(t_anthill *anthill)
 {
 	t_list *set;
 	int n;
@@ -430,7 +373,6 @@ void	ft_select_optimal_path_set(t_anthill *anthill) // вои эту перед�
 	n = ft_find_optimal_path_set_position(anthill);
 	while (i < n)
 	{
-		ft_printf("%d\n", n);
 		set = anthill->path_set;
 		anthill->path_set = anthill->path_set->next;
 		set->next = NULL;
@@ -442,102 +384,12 @@ void	ft_select_optimal_path_set(t_anthill *anthill) // вои эту перед�
 void ft_print_map(t_anthill *anthill)
 {
 	t_list *map;	
-	int len;
 	
 	map = anthill->map;
 	while (map)
 	{
-		len = ft_strlen((char*)(map->content));
-		write(1, (char*)(map->content), len);
-		write(1, "\n", 1);
+		ft_printf("%s\n", map->content);
 		map = map->next;
-	}
-}
-
-void ft_shift_ants(t_list *path)
-{
-	t_list *room;
-	t_list *next_room;
-	
-	if (path->next)
-	{
-		room = *(t_list**)(path->content);
-		next_room = *(t_list**)(path->next->content);
-		ft_get_room_from_anthill(next_room)->ant = ft_get_room_from_anthill(room)->ant;
-		ft_get_room_from_anthill(room)->ant = NULL;
-		if (ft_get_room_from_anthill(next_room)->ant)
-		{		
-			ft_printf("%s-%s ", ft_get_room_from_anthill(next_room)->ant, ft_get_room_from_anthill(next_room)->name);
-		}
-	}
-	else if (path)
-	{
-		room = *(t_list**)(path->content);
-		if (ft_get_room_from_anthill(room)->ant)
-		{
-			ft_strclr(ft_get_room_from_anthill(room)->ant);
-			free(ft_get_room_from_anthill(room)->ant);
-			ft_get_room_from_anthill(room)->ant = NULL;
-			//ft_strdel(&ft_get_room_from_anthill(room)->ant);
-
-		}
-	}
-}
-
-void ft_put_ant_to_path(t_list *path, int *j)
-{
-	char* index;
-	char* ant_name;
-	t_list *room;
-	t_list *path_body;
-	t_path *path_header;
-
-	path_header = (t_path*)(path->content);
-	path_header->path_flow++ ;
-	path_body = path_header->path;
-	if (!(index = ft_itoa(*j)))
-		ft_exit(NULL, NULL);
-	if (!(ant_name = ft_strjoin("L", index)))
-		ft_exit(NULL, NULL);
-	free(index);
-	ft_lstiter(path_body, ft_shift_ants);
-	room = *(t_list**)(path_body->content);
-	ft_get_room_from_anthill(room)->ant = ant_name;
-	ft_printf("%s-%s ", ft_get_room_from_anthill(room)->ant, ft_get_room_from_anthill(room)->name);
-}
-
-void ft_push_ants(t_anthill *anthill, int *j)
-{
-	t_list *path;
-	t_path* p;
-	
-	path = ((t_path_set*)(anthill->path_set->content))->paths;
-	while (path)
-	{
-		p = (t_path*)(path->content);
-		if (p->path_capacity > p->path_flow && (*j) <= anthill->ants)
-			{	
-				ft_put_ant_to_path(path, j);
-				(*j)++;
-			}
-		else
-			ft_lstiter(p->path, ft_shift_ants);
-		path = path->next;
-	}
-}
-
-void ft_run_ants(t_anthill *anthill)
-{
-	int i;
-	int j;
-	
-	i = 0; // индекс линий
-	j = 1; // индекс муравья 
-	while (i < anthill->number_lines)
-	{
-		ft_push_ants(anthill, &j);
-		i++;
-		ft_printf("\n");
 	}
 }
 
@@ -561,7 +413,7 @@ void ft_print_selected_paths(t_list *paths)
 	}
 }
 
-int ft_karp(t_anthill *anthill)
+void ft_find_path(t_anthill *anthill)
 {
 	int result;
 	t_list *start;
@@ -586,11 +438,4 @@ int ft_karp(t_anthill *anthill)
 			break;
 	}
 	anthill->start_room = start;
-
-	ft_print_map(anthill);
-	ft_select_optimal_path_set(anthill);
-	ft_print_selected_paths(((t_path_set*)(anthill->path_set->content))->paths);
-	ft_printf("##Optimal number lines  %d\n", anthill->number_lines);
-	ft_run_ants(anthill);
-	return (1);
 }
