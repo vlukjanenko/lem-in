@@ -6,13 +6,14 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 14:01:24 by majosue           #+#    #+#             */
-/*   Updated: 2020/05/03 18:19:25 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/13 21:44:52 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem-in.h"
 
-t_list *ft_lstp2back(t_list **begin_list, void const *content, size_t content_size)
+t_list	*ft_lstp2back(t_list **begin_list, void const *content,\
+size_t content_size)
 {
 	t_list *var1;
 
@@ -29,10 +30,16 @@ t_list *ft_lstp2back(t_list **begin_list, void const *content, size_t content_si
 	return (var1->next);
 }
 
-t_list *ft_dequeue(t_list **queue)
+void	ft_enqueue(t_list **queue, t_list **room)
 {
-	t_list *head;
-	void *content;
+	if (!ft_lstp2back(queue, room, sizeof(*room)))
+		ft_exit(NULL, NULL);
+}
+
+t_list	*ft_dequeue(t_list **queue)
+{
+	t_list	*head;
+	void	*content;
 
 	if (*queue == NULL)
 		return (NULL);
@@ -42,4 +49,37 @@ t_list *ft_dequeue(t_list **queue)
 	content = *(t_list **)(head->content);
 	ft_lstdelone(&head, del);
 	return (content);
+}
+
+void	ft_print_map(t_anthill *anthill)
+{
+	t_list *map;
+
+	map = anthill->map;
+	while (map)
+	{
+		ft_printf("%s\n", map->content);
+		map = map->next;
+	}
+}
+
+void	ft_print_selected_paths(t_list *paths)
+{
+	t_list *path;
+
+	while (paths)
+	{
+		path = ((t_path*)(paths->content))->path;
+		ft_printf("##path ");
+		while (path)
+		{
+			ft_printf("%s", ((t_room*)((*(t_list**)(path->content))->\
+			content))->name);
+			if (path->next)
+				ft_printf("->");
+			path = path->next;
+		}
+		ft_printf("\n");
+		paths = paths->next;
+	}
 }

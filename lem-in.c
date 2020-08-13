@@ -6,13 +6,12 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/20 12:33:02 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/12 21:49:43 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/13 21:45:49 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem-in.h"
 
-//временно для оценки скорости работы частей
 time_t start_time;
 double point[4];
 
@@ -26,6 +25,60 @@ double passed_time()
 	return (dif);
 }
 //-------------------------------------------
+
+int ft_find_optimal_path_set_position(t_anthill *anthill)
+{
+	t_list *psets;
+	t_path_set *ps;
+	int i;
+	int position;
+	
+	position = 0;
+	i = 0;
+	anthill->number_lines = -1;
+	psets = anthill->path_set;
+	while (psets)
+	{
+		ps = (t_path_set*)(psets->content);
+		if (anthill->number_lines == -1 ||\
+		anthill->number_lines > ps->number_lines)
+		{
+			anthill->number_lines = ps->number_lines;
+			position = i;
+		}
+		i++;
+		psets = psets->next;
+	}
+	return (position);
+}
+
+/*
+**	Remove path_set until optimal stay first
+*/
+
+void	ft_select_optimal_path_set(t_anthill *anthill)
+{
+	t_list *set;
+	int n;
+	int i;
+	
+
+	if (!anthill->path_set)
+	{
+		ft_exit("Error: No path found from start to end\n", NULL);
+	}
+	i = 0;
+	n = ft_find_optimal_path_set_position(anthill);
+	while (i < n)
+	{
+		set = anthill->path_set;
+		anthill->path_set = anthill->path_set->next;
+		set->next = NULL;
+		ft_lstdel(&set, del_pathset); 
+		i++;
+	}
+}
+
 
 int	ft_map_read(t_anthill *anthill)
 {

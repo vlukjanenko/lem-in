@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 18:23:10 by majosue           #+#    #+#             */
-/*   Updated: 2020/07/19 22:34:02 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/13 21:47:36 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ int		ft_add_room(t_anthill *anthill, char *line, int x, int y)
 	room.x = x;
 	room.y = y;
 	room.visited = -1;
-	room.used = 0;
 	room.ant = NULL;
 	room.exist = 1; // реальная комната в нее все линки входят
 	room.connected_rooms = NULL;

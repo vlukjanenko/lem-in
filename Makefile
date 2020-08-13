@@ -6,7 +6,7 @@
 #    By: majosue <majosue@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/13 10:14:46 by majosue           #+#    #+#              #
-#    Updated: 2020/08/12 17:03:21 by majosue          ###   ########.fr        #
+#    Updated: 2020/08/13 21:38:14 by majosue          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,8 @@ COMPILERC = gcc
 FLAGS = -Wall -Wextra -Werror -g
 SOURCES  =  lem-in.c ft_lstp2back.c ft_map_read_ants.c ft_map_read_rooms.c \
 ft_atoi_base.c ft_str_is_int.c ft_map_read_links.c ft_find_path.c \
-ft_free_anthill.c ft_run_ants.c ft_find_nbr_lines.c
+ft_free_anthill.c ft_run_ants.c ft_find_nbr_lines.c ft_add_path_to_set.c \
+ft_getters.c ft_mark_path.c ft_find_augmenting_path.c
 OBJECTS = $(SOURCES:.c=.o)
 
 .PHONY: clean fclean re
