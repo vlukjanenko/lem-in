@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/20 12:33:02 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/14 13:16:04 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 16:59:54 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,11 @@ int		ft_map_read(t_anthill *anthill)
 	return (EXIT_SUCCESS);
 }
 
+void	ft_print_map(t_list *lst)
+{
+	ft_printf("%s\n", (char*)(lst->content));
+}
+
 int		main(void)
 {
 	t_anthill anthill;
@@ -89,6 +94,7 @@ int		main(void)
 	ft_map_read(&anthill);
 	ft_find_path(&anthill);
 	ft_print_map(&anthill);
+	ft_lstiter(anthill.map, ft_print_map);
 	ft_select_optimal_path_set(&anthill);
 	ft_print_selected_paths(((t_path_set *)(anthill.path_set->content))->paths);
 	ft_printf("##Optimal number lines  %d\n", anthill.number_lines);

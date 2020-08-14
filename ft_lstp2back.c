@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 14:01:24 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/14 07:00:17 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 16:58:19 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,18 +49,6 @@ t_list	*ft_dequeue(t_list **queue)
 	content = *(t_list **)(head->content);
 	ft_lstdelone(&head, del);
 	return (content);
-}
-
-void	ft_print_map(t_anthill *anthill)
-{
-	t_list *map;
-
-	map = anthill->map;
-	while (map)
-	{
-		ft_printf("%s\n", map->content);
-		map = map->next;
-	}
 }
 
 void	ft_print_selected_paths(t_list *paths)

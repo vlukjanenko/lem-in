@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 15:03:50 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/14 07:09:43 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 14:48:06 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int		ft_is_ant_nbr(char *line, t_anthill *anthill)
 	if (!ft_str_is_int(line, &number) && number > 0)
 	{
 		anthill->ants = number;
-		error = ft_lstp2back(&anthill->map, line, ft_strlen(line) + 1);
+		error = ft_lstp2top(&anthill->map, line, ft_strlen(line) + 1);
 		if (!error)
 			ft_exit(NULL, NULL);
 		return (EXIT_SUCCESS);
@@ -63,7 +63,7 @@ int		ft_is_command(char *line, t_list **map)
 
 	if (line[0] && line[0] == '#' && line[1] == '#')
 	{
-		error = ft_lstp2back(map, line, ft_strlen(line) + 1);
+		error = ft_lstp2top(map, line, ft_strlen(line) + 1);
 		if (!error)
 			ft_exit(NULL, NULL);
 	}
@@ -85,7 +85,7 @@ int		ft_is_comment(char *line, t_list **map)
 
 	if (line[0] && line[0] == '#' && !((line[1] == '#')))
 	{
-		error = ft_lstp2back(map, line, ft_strlen(line) + 1);
+		error = ft_lstp2top(map, line, ft_strlen(line) + 1);
 		if (!error)
 			ft_exit(NULL, NULL);
 		return (EXIT_SUCCESS);

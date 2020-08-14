@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/29 09:05:08 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/14 07:17:21 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 15:20:56 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	ft_set_edge(t_list *in_room, t_list *out_room, int flow, int capacity)
 	edge.flow = flow;
 	edge.capacity = capacity;
 	edge.disable = 0;
-	if (!ft_lstp2back(&((t_room *)(in_room->content))->\
+	if (!ft_lstp2top(&((t_room *)(in_room->content))->\
 	connected_rooms, &edge, sizeof(edge)))
 		ft_exit(NULL, NULL);
 }
@@ -47,7 +47,7 @@ int		ft_is_link(char *line, t_anthill *anthill)
 	ft_set_edge(connected_room, room->next, 0, 0);
 	ft_set_edge(connected_room->next, room, 0, 1);
 	ft_set_edge(room, connected_room->next, 0, 0);
-	if (!ft_lstp2back(&anthill->map, line, ft_strlen(line) + 1))
+	if (!ft_lstp2top(&anthill->map, line, ft_strlen(line) + 1))
 		ft_exit(NULL, NULL);
 	ft_clean_array(&room_names);
 	return (EXIT_SUCCESS);

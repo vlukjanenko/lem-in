@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/20 12:35:07 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/14 13:12:55 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 17:00:20 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ t_link			*ft_get_link_from_connected(t_list *connected_rooms);
 t_room			*ft_get_room_from_anthill(t_list *rooms);
 void			ft_set_edge(t_list *in_room,\
 t_list *out_room, int flow, int capacity);
-void			ft_print_map(t_anthill *anthill);
+void			ft_print_map(t_list *lst);
 void			ft_select_optimal_path_set(t_anthill *anthill);
 void			ft_print_selected_paths(t_list *paths);
 t_link			*ft_find_link(t_list *node, t_list *connected_room);
@@ -128,5 +128,7 @@ int				ft_add_path_set(t_anthill *anthill);
 int				ft_find_augmenting_path(t_anthill *anthill);
 int				ft_mark_path(t_anthill *anthill);
 t_list			*ft_get_last_room_adress(t_list *rooms);
+t_list			*ft_lstp2top(t_list **begin_list, void const *content,\
+size_t content_size);
 
 #endif
