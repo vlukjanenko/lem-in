@@ -6,11 +6,11 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/13 17:57:08 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/13 18:05:34 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 07:00:10 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lem-in.h"
+#include "lem_in.h"
 
 /*
 **	Get pointer from anthill->rooms to t_room structure

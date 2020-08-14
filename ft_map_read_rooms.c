@@ -6,11 +6,11 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 18:23:10 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/13 21:47:36 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 07:59:57 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lem-in.h"
+#include "lem_in.h"
 
 /*
 **	Return room name separated from room coordinates
@@ -45,7 +45,7 @@ char	*ft_get_room_name(char *line)
 /*
 **	Try to save room if it is unic and don't have "-" sign
 **	in name
-**	добавляем комнату с карты в неё будут идти все входящие ребра, 
+**	добавляем комнату с карты в неё будут идти все входящие ребра,
 **	а за ней сразу ещё одну из неё будут идти все исодящие.
 **	и связываем их прямым и обратным ребром. Разбиение на две комнаты
 **	ограничит пропускную способность комнаты
@@ -61,17 +61,16 @@ int		ft_add_room(t_anthill *anthill, char *line, int x, int y)
 	room.y = y;
 	room.visited = -1;
 	room.ant = NULL;
-	room.exist = 1; // реальная комната в нее все линки входят
+	room.exist = 1;
 	room.connected_rooms = NULL;
 	room.name = ft_get_room_name(line);
 	if (ft_get_room_adress(room.name, anthill))
 		ft_exit("Error: room already exist", room.name);
 	if (!(in_room = ft_lstp2back(&anthill->rooms, &room, sizeof(room))))
 		ft_exit(NULL, NULL);
-	room.name = ft_strjoin(room.name, "(OUT)"); //временно для отличия комнат
-	// и для последубщей очистки нужно выделить память либо чистить через один
-	//room.name = ft_strdup(room.name);
-	room.exist = 0; // фиктивная комната из нее все линки выходят
+	if (!(room.name = ft_strjoin(room.name, "(OUT)")))
+		ft_exit(NULL, NULL);
+	room.exist = 0;
 	if (!(out_room = ft_lstp2back(&anthill->rooms, &room, sizeof(room))))
 		ft_exit(NULL, NULL);
 	ft_set_edge(in_room, out_room, 0, 1);
@@ -113,8 +112,6 @@ int		ft_is_room(char *line, t_anthill *anthill)
 
 int		ft_get_start_end(char *line, t_anthill *anthill)
 {
-	char *name = NULL;
-
 	if (ft_strequ(line, "##start"))
 	{
 		if (anthill->start_room)
@@ -123,8 +120,7 @@ int		ft_get_start_end(char *line, t_anthill *anthill)
 			ft_exit(NULL, NULL);
 		if (ft_is_room(line, anthill))
 			ft_exit("Error: expected room instead:", line);
-		name = ft_get_room_name(line);
-		anthill->start_room = ft_get_room_adress(name, anthill);
+		anthill->start_room = ft_get_last_room_adress(anthill->rooms);
 	}
 	else
 	{
@@ -134,10 +130,8 @@ int		ft_get_start_end(char *line, t_anthill *anthill)
 			ft_exit(NULL, NULL);
 		if (ft_is_room(line, anthill))
 			ft_exit("Error: expected room instead:", line);
-		name = ft_get_room_name(line);
-		anthill->end_room = ft_get_room_adress(name, anthill);	
-		}
-	free(name);
+		anthill->end_room = ft_get_last_room_adress(anthill->rooms);
+	}
 	free(line);
 	return (EXIT_SUCCESS);
 }

@@ -6,13 +6,14 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 14:01:24 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/11 16:05:08 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 08:10:01 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-t_list *ft_lstp2back(t_list **begin_list, void const *content, size_t content_size)
+t_list	*ft_lstp2back(t_list **begin_list,\
+void const *content, size_t content_size)
 {
 	t_list *var1;
 

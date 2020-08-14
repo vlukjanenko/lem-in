@@ -6,11 +6,11 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 16:34:02 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/12 16:52:38 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 07:01:04 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lem-in.h"
+#include "lem_in.h"
 
 /*
 **	Shift ants that already in path;

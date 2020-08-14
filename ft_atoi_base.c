@@ -6,11 +6,11 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/12 18:43:15 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/12 12:41:33 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 08:02:04 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lem-in.h"
+#include "lem_in.h"
 
 long	ft_atoi_base(const char *nbr, unsigned int base)
 {
@@ -45,7 +45,7 @@ long	ft_atoi_base(const char *nbr, unsigned int base)
 **	Try to find existing room name in anthill
 */
 
-t_list		*ft_get_room_adress(char *name, t_anthill *anthill)
+t_list	*ft_get_room_adress(char *name, t_anthill *anthill)
 {
 	t_list *head;
 
@@ -57,6 +57,13 @@ t_list		*ft_get_room_adress(char *name, t_anthill *anthill)
 		head = head->next;
 	}
 	return (NULL);
+}
+
+t_list	*ft_get_last_room_adress(t_list *rooms)
+{
+	while (rooms->next->next)
+		rooms = rooms->next;
+	return (rooms);
 }
 
 /*

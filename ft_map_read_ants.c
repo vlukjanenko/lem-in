@@ -6,12 +6,11 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 15:03:50 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/12 12:59:20 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 07:09:43 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lem-in.h"
-#include <stdio.h>
+#include "lem_in.h"
 
 /*
 **	Exit with error message
@@ -37,8 +36,8 @@ void	ft_exit(char *str, char *str2)
 
 int		ft_is_ant_nbr(char *line, t_anthill *anthill)
 {
-	int number;
-	void *error;
+	int		number;
+	void	*error;
 
 	if (!ft_str_is_int(line, &number) && number > 0)
 	{

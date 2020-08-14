@@ -6,11 +6,11 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/13 21:26:05 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/13 21:28:45 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 06:59:47 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lem-in.h"
+#include "lem_in.h"
 
 int		ft_is_room_visitable(t_list *rooms)
 {

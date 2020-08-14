@@ -6,11 +6,11 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/13 18:26:59 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/13 18:41:02 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 07:00:46 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lem-in.h"
+#include "lem_in.h"
 
 int		ft_add_path_set(t_anthill *anthill)
 {

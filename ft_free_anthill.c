@@ -6,11 +6,11 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 12:38:48 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/12 22:00:10 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 07:00:04 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lem-in.h"
+#include "lem_in.h"
 
 /*
 **	Clean up memory
