@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/20 12:33:02 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/14 16:59:54 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 17:18:18 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ int		main(void)
 
 	ft_map_read(&anthill);
 	ft_find_path(&anthill);
-	ft_print_map(&anthill);
 	ft_lstiter(anthill.map, ft_print_map);
 	ft_select_optimal_path_set(&anthill);
 	ft_print_selected_paths(((t_path_set *)(anthill.path_set->content))->paths);
