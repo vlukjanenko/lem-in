@@ -6,13 +6,13 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/27 20:51:44 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/14 08:19:45 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/14 17:01:03 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 
-int	ft_str_is_int(char *line, int *number)
+int		ft_str_is_int(char *line, int *number)
 {
 	long	n;
 	int		i;
@@ -39,4 +39,18 @@ int	ft_str_is_int(char *line, int *number)
 		return (EXIT_FAILURE);
 	*number = n;
 	return (EXIT_SUCCESS);
+}
+
+t_list	*ft_lstp2top(t_list **begin_list, void const *content,\
+size_t content_size)
+{
+	t_list *new_begin;
+
+	new_begin = ft_lstnew(content, content_size);
+	if (!*begin_list)
+		return (*begin_list = new_begin);
+	if (!new_begin)
+		return (new_begin);
+	ft_lstadd(begin_list, new_begin);
+	return (*begin_list);
 }
