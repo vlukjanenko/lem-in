@@ -3,31 +3,36 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: yquaro <yquaro@student.42.fr>              +#+  +:+       +#+         #
+#    By: qypec <qypec@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/08/02 12:36:28 by yquaro            #+#    #+#              #
-#    Updated: 2019/08/03 19:40:14 by yquaro           ###   ########.fr        #
+#    Created: 2019/07/09 13:11:11 by qypec             #+#    #+#              #
+#    Updated: 2019/07/31 16:12:55 by qypec            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-include includes/printf.mk
+include ../includes/libft.mk
 
-all:
-	@make -C libft/ all
-	@make -C src/ all
-	@make -C lib/ all
-	gcc -g main.c -I includes/ -L. -lftprintf -o ft_printf
+SOURCES = ft_matrdel.c ft_matrdup.c ft_matrmemalloc.c ft_matrnew.c
+OBJECTS = ft_matrdel.o ft_matrdup.o ft_matrmemalloc.o ft_matrnew.o
+
+NAME = libmatr.a
+
+all: print $(SOURCES) $(NAME)
+	
+print:
+	@echo \*\*\* Compiling ft_matr
+
+.c.o:
+	$(COMPILING) $< -o $@
+
+$(NAME): $(OBJECTS)
+	@ar rc $(NAME) $(OBJECTS)
+	@ranlib $(NAME)
+	@mv $(NAME) ../lib/$(NAME)
 
 clean:
-	@make -C lib/ clean
-	@make -C libft/ clean
-	@make -C src/ clean
+	@rm -f $(OBJECTS)
 
 fclean: clean
-	@make -C libft/ fclean
-	@make -C src/ fclean
-	@make -C lib/ fclean
-	@rm -f $(NAME)
-	@rm -f $(EXECUTABLE)
-
-re: fclean all
+	@rm -f ../lib/$(NAME)
+	

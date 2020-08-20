@@ -5,29 +5,24 @@
 #                                                     +:+ +:+         +:+      #
 #    By: yquaro <yquaro@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/08/02 12:36:28 by yquaro            #+#    #+#              #
-#    Updated: 2019/08/03 19:40:14 by yquaro           ###   ########.fr        #
+#    Created: 2019/07/23 14:13:04 by yquaro            #+#    #+#              #
+#    Updated: 2019/07/25 17:23:34 by yquaro           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-include includes/printf.mk
+NAME = libftprintf.a
 
 all:
-	@make -C libft/ all
-	@make -C src/ all
-	@make -C lib/ all
-	gcc -g main.c -I includes/ -L. -lftprintf -o ft_printf
+	@echo \*\*\* Reassembly libft.a and printf.a to $(NAME)
+	ar -x libft.a
+	ar -x printf.a
+	@ar rc $(NAME) *.o
+	@ranlib $(NAME)
+	@rm -f __.SYMDEF*
+	@mv $(NAME) ../$(NAME)
+	@echo \*\*\* LIBFTPRINTF COMPILED!
 
 clean:
-	@make -C lib/ clean
-	@make -C libft/ clean
-	@make -C src/ clean
+	@rm -f *.o
 
 fclean: clean
-	@make -C libft/ fclean
-	@make -C src/ fclean
-	@make -C lib/ fclean
-	@rm -f $(NAME)
-	@rm -f $(EXECUTABLE)
-
-re: fclean all

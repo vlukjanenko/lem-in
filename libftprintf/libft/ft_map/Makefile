@@ -5,29 +5,35 @@
 #                                                     +:+ +:+         +:+      #
 #    By: yquaro <yquaro@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/08/02 12:36:28 by yquaro            #+#    #+#              #
-#    Updated: 2019/08/03 19:40:14 by yquaro           ###   ########.fr        #
+#    Created: 2019/06/14 13:54:33 by yquaro            #+#    #+#              #
+#    Updated: 2019/08/02 14:58:32 by yquaro           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-include includes/printf.mk
+include ../includes/libft.mk
 
-all:
-	@make -C libft/ all
-	@make -C src/ all
-	@make -C lib/ all
-	gcc -g main.c -I includes/ -L. -lftprintf -o ft_printf
+SOURCES = ft_hashfunc.c ft_mapinsert.c ft_mapnew.c ht_list.c \
+			ft_mapdelone.c ft_ismapitem.c ft_getvalue.c ft_mapdel.c
+OBJECTS = ft_hashfunc.o ft_mapinsert.o ft_mapnew.o ht_list.o \
+			ft_mapdelone.o ft_ismapitem.o ft_getvalue.o ft_mapdel.o
+
+NAME = libhashtab.a
+
+all: print $(SOURCES) $(NAME)
+	
+print:
+	@echo \*\*\* Compiling ft_hashtab
+
+.c.o:
+	$(COMPILING) $< -o $@
+
+$(NAME): $(OBJECTS)
+	@ar rc $(NAME) $(OBJECTS)
+	@ranlib $(NAME)
+	@mv $(NAME) ../lib/$(NAME)
 
 clean:
-	@make -C lib/ clean
-	@make -C libft/ clean
-	@make -C src/ clean
+	@rm -f $(OBJECTS)
 
 fclean: clean
-	@make -C libft/ fclean
-	@make -C src/ fclean
-	@make -C lib/ fclean
-	@rm -f $(NAME)
-	@rm -f $(EXECUTABLE)
-
-re: fclean all
+	@rm -f ../lib/$(NAME)

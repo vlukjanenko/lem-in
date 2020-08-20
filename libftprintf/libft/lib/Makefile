@@ -3,31 +3,33 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: yquaro <yquaro@student.42.fr>              +#+  +:+       +#+         #
+#    By: qypec <qypec@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/08/02 12:36:28 by yquaro            #+#    #+#              #
-#    Updated: 2019/08/03 19:40:14 by yquaro           ###   ########.fr        #
+#    Created: 2019/06/18 01:54:46 by yquaro            #+#    #+#              #
+#    Updated: 2019/07/31 15:35:06 by qypec            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-include includes/printf.mk
+NAME = libft.a
 
 all:
-	@make -C libft/ all
-	@make -C src/ all
-	@make -C lib/ all
-	gcc -g main.c -I includes/ -L. -lftprintf -o ft_printf
+	@echo \*\*\* Reassembly libraries from libft
+	ar -x libft.a
+	ar -x liballoc.a
+	ar -x libctime.a
+	ar -x libhashtab.a
+	ar -x libmath.a
+	ar -x liblist.a
+	ar -x libbuff.a
+	ar -x libmatr.a
+	@ar rc $(NAME) *.o
+	@ranlib $(NAME)
+	@rm -f __.SYMDEF\ SORTED
+	@mv $(NAME) ../../lib/$(NAME)
+	@echo \*\*\* LIBFT COMPILED!
 
 clean:
-	@make -C lib/ clean
-	@make -C libft/ clean
-	@make -C src/ clean
+	@rm -f *.o
 
 fclean: clean
-	@make -C libft/ fclean
-	@make -C src/ fclean
-	@make -C lib/ fclean
 	@rm -f $(NAME)
-	@rm -f $(EXECUTABLE)
-
-re: fclean all

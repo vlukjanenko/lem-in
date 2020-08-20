@@ -5,29 +5,33 @@
 #                                                     +:+ +:+         +:+      #
 #    By: yquaro <yquaro@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/08/02 12:36:28 by yquaro            #+#    #+#              #
-#    Updated: 2019/08/03 19:40:14 by yquaro           ###   ########.fr        #
+#    Created: 2019/08/02 12:36:22 by yquaro            #+#    #+#              #
+#    Updated: 2019/08/02 16:27:55 by yquaro           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-include includes/printf.mk
+include ../includes/libft.mk
 
-all:
-	@make -C libft/ all
-	@make -C src/ all
-	@make -C lib/ all
-	gcc -g main.c -I includes/ -L. -lftprintf -o ft_printf
+SOURCES = ft_abs.c ft_pow.c
+OBJECTS = ft_abs.o ft_pow.o
+
+NAME = libmath.a
+
+all: print $(SOURCES) $(NAME)
+	
+print:
+	@echo \*\*\* Compiling ft_math
+
+.c.o:
+	$(COMPILING) $< -o $@
+
+$(NAME): $(OBJECTS)
+	@ar rc $(NAME) $(OBJECTS)
+	@ranlib $(NAME)
+	@mv $(NAME) ../lib/$(NAME)
 
 clean:
-	@make -C lib/ clean
-	@make -C libft/ clean
-	@make -C src/ clean
+	@rm -f $(OBJECTS)
 
 fclean: clean
-	@make -C libft/ fclean
-	@make -C src/ fclean
-	@make -C lib/ fclean
-	@rm -f $(NAME)
-	@rm -f $(EXECUTABLE)
-
-re: fclean all
+	@rm -f ../lib/$(NAME)
