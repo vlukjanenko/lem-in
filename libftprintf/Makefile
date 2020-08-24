@@ -16,7 +16,7 @@ all:
 	@make -C libft/ all
 	@make -C src/ all
 	@make -C lib/ all
-	gcc -g main.c -I includes/ -L. -lftprintf -o ft_printf
+	# gcc -g main.c -I includes/ -L. -lftprintf -o ft_printf
 
 clean:
 	@make -C lib/ clean

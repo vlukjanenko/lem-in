@@ -16,7 +16,6 @@
 # include "get_next_line.h"
 # include <stdio.h>
 # include <limits.h>
-# include "ft_printf.h"
 # define TRUE 1
 # define FALSE 0
 
@@ -86,6 +85,7 @@ typedef struct	s_link
 	int		disable;
 }				t_link;
 
+int					ft_printf(const char *format, ...);
 t_list			*ft_lstp2back(t_list **begin_list, void const *content,\
 size_t content_size);
 int				ft_map_read_ants(char **line, t_anthill *anthill);

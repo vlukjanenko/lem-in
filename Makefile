@@ -45,7 +45,7 @@ $(NAME2): ./visu-hex/bin/VisuHex.class ./visu-hex/src/VisuHex.java
 $(LIBFT): libft/*.c libft/*.h	
 	@make -C libft/
 
-$(LIBFTPRINTF): $(LIBFT) libftprintf/*.c libftprintf/*.h
+$(LIBFTPRINTF):
 	@make -C libftprintf/
 
 %.o: %.c $(HEADER)
