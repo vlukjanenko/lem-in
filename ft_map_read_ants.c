@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 15:03:50 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/14 14:48:06 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/27 16:44:27 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,6 @@ int		ft_map_read_ants(char **line, t_anthill *anthill)
 	if (read_state == -1)
 		ft_exit(NULL, NULL);
 	else if (read_state == 0 || error)
-		ft_exit("Error: no ants found", "");
+		ft_exit("ERROR: quantity of ants must be positive integer", "");
 	return (EXIT_SUCCESS);
 }

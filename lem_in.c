@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/20 12:33:02 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/27 15:58:51 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/27 16:45:07 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	ft_select_optimal_path_set(t_anthill *anthill)
 
 	if (!anthill->path_set)
 	{
-		ft_exit("Error: No path found from start to end\n", NULL);
+		ft_exit("ERROR: No path found from start to end\n", NULL);
 	}
 	i = 0;
 	n = ft_find_optimal_path_set_position(anthill);
@@ -94,6 +94,7 @@ int		main(void)
 	ft_map_read(&anthill);
 	ft_find_path(&anthill);
 	ft_lstiter(anthill.map, ft_print_map);
+	ft_printf("\n");
 	ft_select_optimal_path_set(&anthill);
 	ft_run_ants(&anthill);
 	ft_free_anthill(&anthill);
