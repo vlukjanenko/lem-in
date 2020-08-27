@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/29 09:05:08 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/14 15:20:56 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/27 16:41:05 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,11 @@ int		ft_is_link(char *line, t_anthill *anthill)
 	if (ft_array_len(room_names) != 2)
 	{
 		ft_clean_array(&room_names);
-		ft_exit("Error: Invalid line in map: ", line);
+		ft_exit("ERROR: Invalid line in map: ", line);
 	}
 	if ((room = ft_get_room_adress(room_names[0], anthill)) == NULL ||
 		(connected_room = ft_get_room_adress(room_names[1], anthill)) == NULL)
-		ft_exit("Error: unknown room: ", line);
+		ft_exit("ERROR: unknown room: ", line);
 	ft_set_edge(room->next, connected_room, 0, 1);
 	ft_set_edge(connected_room, room->next, 0, 0);
 	ft_set_edge(connected_room->next, room, 0, 1);
@@ -73,6 +73,6 @@ int		ft_map_read_links(char **line, t_anthill *anthill)
 	if (read_state == -1)
 		ft_exit(NULL, NULL);
 	if (read_state > 0)
-		ft_exit("Error: invalid line in map", "");
+		ft_exit("ERROR: invalid line in map", "");
 	return (EXIT_SUCCESS);
 }

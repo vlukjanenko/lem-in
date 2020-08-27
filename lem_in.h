@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/20 12:35:07 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/14 17:00:20 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/27 15:59:26 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,6 @@ void			ft_set_edge(t_list *in_room,\
 t_list *out_room, int flow, int capacity);
 void			ft_print_map(t_list *lst);
 void			ft_select_optimal_path_set(t_anthill *anthill);
-void			ft_print_selected_paths(t_list *paths);
 t_link			*ft_find_link(t_list *node, t_list *connected_room);
 int				ft_find_nbr_lines(t_anthill *anthill,\
 int last_used_path, int last_used_path_len);

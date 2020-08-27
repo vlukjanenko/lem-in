@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 14:01:24 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/14 16:58:19 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/27 16:00:16 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,25 +49,4 @@ t_list	*ft_dequeue(t_list **queue)
 	content = *(t_list **)(head->content);
 	ft_lstdelone(&head, del);
 	return (content);
-}
-
-void	ft_print_selected_paths(t_list *paths)
-{
-	t_list *path;
-
-	while (paths)
-	{
-		path = ((t_path*)(paths->content))->path;
-		ft_printf("##path ");
-		while (path)
-		{
-			ft_printf("%s", ((t_room*)((*(t_list**)(path->content))->\
-			content))->name);
-			if (path->next)
-				ft_printf("->");
-			path = path->next;
-		}
-		ft_printf("\n");
-		paths = paths->next;
-	}
 }
