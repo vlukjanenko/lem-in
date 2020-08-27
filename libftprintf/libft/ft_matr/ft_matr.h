@@ -13,7 +13,7 @@
 #ifndef FT_MATR_H
 # define FT_MATR_H
 
-#include "../includes/libft.h"
+# include "../includes/libft.h"
 
 char					**ft_matrnew(size_t matr_size, ...);
 char					**ft_matrmemalloc(size_t size);

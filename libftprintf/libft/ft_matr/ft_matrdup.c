@@ -16,23 +16,23 @@ char					**ft_matrdup(const char *first_str, ...)
 {
 	char				**matr;
 	va_list				arg;
-	int					number_of_elements;
+	int					number_of_el;
 	int					i;
 
 	if (first_str == NULL)
 		return (NULL);
 	va_start(arg, first_str);
-	number_of_elements = 1;
+	number_of_el = 1;
 	while (va_arg(arg, char*) != NULL)
-		number_of_elements++;
+		number_of_el++;
 	va_end(arg);
-	if ((matr = (char **)malloc(sizeof(char *) * (number_of_elements + 1))) == NULL)
+	if ((matr = (char **)malloc(sizeof(char *) * (number_of_el + 1))) == NULL)
 		return (NULL);
-	matr[number_of_elements] = NULL;
+	matr[number_of_el] = NULL;
 	va_start(arg, first_str);
 	matr[0] = ft_strdup(first_str);
 	i = 1;
-	while (--number_of_elements)
+	while (--number_of_el)
 		matr[i++] = ft_strdup(va_arg(arg, char *));
 	va_end(arg);
 	return (matr);

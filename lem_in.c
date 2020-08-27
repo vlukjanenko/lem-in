@@ -90,7 +90,6 @@ void	ft_print_map(t_list *lst)
 int		main(void)
 {
 	t_anthill anthill;
-
 	ft_map_read(&anthill);
 	ft_find_path(&anthill);
 	ft_lstiter(anthill.map, ft_print_map);
