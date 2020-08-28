@@ -6,7 +6,7 @@
 #    By: majosue <majosue@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/13 10:14:46 by majosue           #+#    #+#              #
-#    Updated: 2020/08/27 16:13:24 by majosue          ###   ########.fr        #
+#    Updated: 2020/08/28 12:48:48 by majosue          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ OBJECTS = $(SOURCES:.c=.o)
 
 .PHONY: clean fclean re
 
-all: $(NAME) $(NAME2)
+all: $(NAME)
 
 $(NAME): $(OBJECTS) $(LIBFT) $(LIBFTPRINTF)
 	$(COMPILERC) -o $(NAME) $(OBJECTS) $(INCLUDES) -L libft/ -lft -L libftprintf/ -lftprintf

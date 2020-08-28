@@ -6,7 +6,7 @@
 /*   By: majosue <majosue@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/20 12:33:02 by majosue           #+#    #+#             */
-/*   Updated: 2020/08/27 16:45:07 by majosue          ###   ########.fr       */
+/*   Updated: 2020/08/28 07:25:46 by majosue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ void	ft_print_map(t_list *lst)
 int		main(void)
 {
 	t_anthill anthill;
+
 	ft_map_read(&anthill);
 	ft_find_path(&anthill);
 	ft_lstiter(anthill.map, ft_print_map);
